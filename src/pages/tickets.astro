@@ -3,22 +3,71 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Get Tickets - Yellowstone QSR</title>
+    <title>Report an Issue - Yellowstone QSR</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background-color: #f9f9f9;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+      }
+
+      .ticket-options {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .ticket-box {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        color: #333;
+        width: 250px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .ticket-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .ticket-box h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+    </style>
   </head>
+
   <body>
-    <main style="text-align: center; padding: 2rem;">
-      <h1>Get Your Tickets</h1>
-      <p>
-        Click below to visit our official ticketing site.
-      </p>
-      <a 
-        href="https://tickets.yellowstoneqsr.org" 
-        target="_blank" 
+    <h1>Select which type of issue you have</h1>
+    <div class="ticket-options">
+      <a
+        class="ticket-box"
+        href="https://nocodb.yellowstoneqsr.org/dashboard/#/nc/form/92006894-0d88-4e77-af78-4f7490de17ae"
+        target="_blank"
         rel="noopener noreferrer"
-        style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #006400; color: white; text-decoration: none; border-radius: 5px;"
       >
-        Go to Ticket Site
+        <h2>Maintenance Ticket</h2>
       </a>
-    </main>
+
+      <a
+        class="ticket-box"
+        href="https://nocodb.yellowstoneqsr.org/dashboard/#/nc/form/18c7ba12-9644-4224-933f-ebabd53f600c"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <h2>Technology Ticket</h2>
+      </a>
+    </div>
   </body>
 </html>
