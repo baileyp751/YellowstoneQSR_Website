@@ -13,8 +13,26 @@
         text-align: center;
       }
 
+      .home-button {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background-color: #006400;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.2s ease;
+      }
+
+      .home-button:hover {
+        background-color: #004d00;
+      }
+
       h1 {
         font-size: 1.8rem;
+        margin-top: 4rem;
         margin-bottom: 2rem;
       }
 
@@ -49,6 +67,8 @@
   </head>
 
   <body>
+    <a class="home-button" href="https://yellowstoneqsr.org">Home</a>
+
     <h1>Select which type of issue you have</h1>
     <div class="ticket-options">
       <a
