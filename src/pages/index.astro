@@ -7,16 +7,36 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<p>
-				Welcome to the offical yellowstone QSR Website. This is a temporary page that will be updated with more links down the line.
-			</p>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main style="text-align: center; padding: 2rem;">
+      <p>
+        Welcome to the official Yellowstone QSR Website. This is a temporary page that will be updated with more links down the line.
+      </p>
+
+      <section style="margin: 2rem 0;">
+        <a
+          href="/tickets"
+          style="
+            display: inline-block;
+            color: black;
+            padding: 0.5rem 1.25rem;
+            border: 2px solid black;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, color 0.2s ease;
+          "
+          onmouseover="this.style.backgroundColor='black'; this.style.color='white';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='black';"
+        >
+          Tickets
+        </a>
+      </section>
+    </main>
+    <Footer />
+  </body>
 </html>
