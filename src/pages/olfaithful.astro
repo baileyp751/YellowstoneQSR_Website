@@ -1,0 +1,32 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+---
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      iframe {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe
+      src="https://www.youtube.com/embed/NUh7jIxvh2Q?autoplay=1&mute=1&vq=hd1080&controls=0&modestbranding=1&rel=0&playsinline=1"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+    ></iframe>
+  </body>
+</html>
