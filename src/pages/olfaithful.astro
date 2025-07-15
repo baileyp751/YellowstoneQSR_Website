@@ -6,7 +6,7 @@ import BaseHead from '../components/BaseHead.astro';
 <html>
   <head>
     <BaseHead title="Old Faithful Live Stream" description="Live view of the Old Faithful geyser." />
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
     <style>
       html, body {
         margin: 0;
@@ -27,24 +27,27 @@ import BaseHead from '../components/BaseHead.astro';
   </head>
   <body>
     <video id="video" autoplay muted playsinline controls></video>
+
     <script>
-      const video = document.getElementById('video');
-      const streamURL = "https://cs7.pixelcaster.com/nps/faithful.stream/playlist.m3u8";
+      window.addEventListener('load', function () {
+        const video = document.getElementById('video');
+        const streamURL = "https://cs7.pixelcaster.com/nps/faithful.stream/playlist.m3u8";
 
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(streamURL);
-        hls.attachMedia(video);
+        if (window.Hls && Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(streamURL);
+          hls.attachMedia(video);
 
-        hls.on(Hls.Events.ERROR, function (event, data) {
-          console.error("HLS.js error:", data);
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // For Safari
-        video.src = streamURL;
-      } else {
-        console.error("HLS not supported in this browser.");
-      }
+          hls.on(Hls.Events.ERROR, function (event, data) {
+            console.error("HLS.js error:", data);
+          });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          // Safari fallback
+          video.src = streamURL;
+        } else {
+          console.error("HLS is not supported in this browser.");
+        }
+      });
     </script>
   </body>
 </html>
