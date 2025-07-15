@@ -35,8 +35,15 @@ import BaseHead from '../components/BaseHead.astro';
         const hls = new Hls();
         hls.loadSource(streamURL);
         hls.attachMedia(video);
+
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          console.error("HLS.js error:", data);
+        });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // For Safari
         video.src = streamURL;
+      } else {
+        console.error("HLS not supported in this browser.");
       }
     </script>
   </body>
