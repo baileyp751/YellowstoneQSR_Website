@@ -5,6 +5,8 @@ import BaseHead from '../components/BaseHead.astro';
 <!DOCTYPE html>
 <html>
   <head>
+    <BaseHead title="Old Faithful Live Stream" description="Live view of the Old Faithful geyser." />
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
       html, body {
         margin: 0;
@@ -15,18 +17,27 @@ import BaseHead from '../components/BaseHead.astro';
         overflow: hidden;
       }
 
-      iframe {
+      video {
         width: 100vw;
         height: 100vh;
-        border: none;
+        object-fit: cover;
+        background: black;
       }
     </style>
   </head>
   <body>
-    <iframe
-      src="https://www.youtube.com/embed/NUh7jIxvh2Q?autoplay=1&mute=1&vq=hd1080&controls=0&modestbranding=1&rel=0&playsinline=1"
-      allow="autoplay; encrypted-media"
-      allowfullscreen
-    ></iframe>
+    <video id="video" autoplay muted playsinline controls></video>
+    <script>
+      const video = document.getElementById('video');
+      const streamURL = "https://cs7.pixelcaster.com/nps/faithful.stream/playlist.m3u8";
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(streamURL);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamURL;
+      }
+    </script>
   </body>
 </html>
