@@ -1,0 +1,89 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${SITE_TITLE} | OTP 2 Application FAQ`} />
+  </head>
+  <body>
+    <Header />
+
+    <main style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+      <h1 style="text-align: center;">OTP 2 Application FAQ</h1>
+
+      <section style="margin-top: 2rem;">
+        <h3>1. What are the responsibilities?</h3>
+        <p>
+          Once a week completing a travel path of a certain section of the store.
+          Completion of basic troubleshooting on smaller issues.
+          A monthly call to answer any questions anyone has about their restaurants.
+          Lastly, ensuring tickets are always put in for any technology issues.
+        </p>
+
+        <h3>2. What qualifications do I need?</h3>
+        <p>
+          Be an active and good employee in the restaurant, and approval from your GM.
+          Those are the only qualifications. All training needed will be completed by you
+          if you are selected for your store.
+        </p>
+
+        <h3>3. Will I get a raise along with this?</h3>
+        <p>
+          No. When you come up for your PRs with your GMs in the future,
+          your performance in this role will also be factored in.
+        </p>
+
+        <h3>4. Do I have to be a manager/Crew Trainer?</h3>
+        <p>
+          No, this role is open to anyone interested.
+        </p>
+
+        <h3>5. What happens after I fill out the form?</h3>
+        <p>
+          You will be emailed with a scheduled interview to ask some questions and gauge
+          your interest. If selected, you will receive an additional email detailing how
+          to complete your training.
+        </p>
+
+        <h3>6. How long do I have to complete the training?</h3>
+        <p>
+          Once selected, you will have one month from that date to complete OTP 1 and 2.
+          Both are relatively short.
+        </p>
+      </section>
+
+      <section style="text-align: center; margin-top: 3rem;">
+        <p><strong>If you are still interested after reading the above information:</strong></p>
+
+        <a
+          href="https://nocodb.yellowstoneqsr.org/dashboard/#/base/1747381b-1102-420b-8987-fa58a8cd7ea6"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="
+            display: inline-block;
+            margin-top: 1rem;
+            color: white;
+            background-color: black;
+            padding: 0.75rem 1.75rem;
+            border: 2px solid black;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, color 0.2s ease;
+          "
+          onmouseover="this.style.backgroundColor='white'; this.style.color='black';"
+          onmouseout="this.style.backgroundColor='black'; this.style.color='white';"
+        >
+          Click here to apply
+        </a>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
