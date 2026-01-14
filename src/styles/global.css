@@ -257,3 +257,61 @@ hr {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+/* Buttons */
+.btn{
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color .2s ease, color .2s ease, transform .08s ease;
+}
+
+.btn:hover{
+  background: transparent;
+  color: var(--text);
+}
+
+.btn:active{
+  transform: translateY(1px);
+}
+
+/* Ticket tiles (big clickable boxes) */
+.tile-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.tile{
+  display: block;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  color: var(--text);
+  transition: transform .12s ease, border-color .2s ease, background-color .2s ease;
+}
+
+.tile:hover{
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.25);
+  background: rgba(255,255,255,.03);
+}
+
+.tile h2{
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+
+@media (max-width: 900px){
+  .tile-grid{ grid-template-columns: 1fr; }
+}
+
