@@ -1,53 +1,36 @@
+---
+const siteTitle = "YellowstoneQSR";
+---
+
 <header>
-	<nav>
-		<h2><a href="/">YellowstoneQSR</a></h2>
-		<div class="internal-links">
-		</div>
-	</nav>
+  <nav>
+    <a href="/" class="brand">{siteTitle}</a>
+  </nav>
 </header>
 
 <style>
   header {
-    margin: 0;
-    padding: 0 1em;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
   }
 
   nav {
+    height: 60px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    max-width: 720px;
-    margin: 0 auto;
+    justify-content: center;
+    max-width: 100%;
   }
 
-  h2 {
-    margin: 0;
-    font-size: 1.2em;
-  }
-
-  nav a {
-    padding: 1em 0.5em;
+  .brand {
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--text);
-    border-bottom: 3px solid transparent;
     text-decoration: none;
-    font-size: 1.05em;
+    letter-spacing: 0.3px;
   }
 
-  nav a:hover {
+  .brand:hover {
     color: var(--accent);
   }
-
-  nav a.active {
-    border-bottom-color: rgba(255,255,255,.35);
-  }
-
-  .internal-links {
-    display: flex;
-    gap: 0.25rem;
-    justify-content: center;
-  }
 </style>
-
