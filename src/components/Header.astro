@@ -7,35 +7,47 @@
 </header>
 
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		display: none; /* Hide the title if you want the link truly centered */
-		margin: 0;
-		font-size: 1em;
-	}
-	nav {
-		display: flex;
-		justify-content: center; /* Center content horizontally */
-		align-items: center;
-		height: 80px;
-	}
-	.internal-links {
-		display: flex;
-		justify-content: center;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
-		font-size: 1.2em;
-	}
-	nav a.active {
-		border-bottom-color: var(--accent);
-	}
+  header {
+    margin: 0;
+    padding: 0 1em;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.2em;
+  }
+
+  nav a {
+    padding: 1em 0.5em;
+    color: var(--text);
+    border-bottom: 3px solid transparent;
+    text-decoration: none;
+    font-size: 1.05em;
+  }
+
+  nav a:hover {
+    color: var(--accent);
+  }
+
+  nav a.active {
+    border-bottom-color: rgba(255,255,255,.35);
+  }
+
+  .internal-links {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+  }
 </style>
+
