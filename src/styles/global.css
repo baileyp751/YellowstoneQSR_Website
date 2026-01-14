@@ -1,6 +1,6 @@
 /*
-  Yellowstone QSR - Global Styles (Dark Theme)
-  Clean, deduped, consistent styling for pages + forms + tiles.
+  Yellowstone QSR - global.css (Dark Theme)
+  Mobile-safe, desktop-preserving, and consistent UI helpers for cards/tiles/forms.
 */
 
 :root {
@@ -44,6 +44,12 @@ body {
   height: 100%;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Atkinson", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   margin: 0;
@@ -60,7 +66,7 @@ body {
   line-height: 1.7;
 }
 
-/* Default content wrapper */
+/* Default content wrapper (matches Astro starter style) */
 main {
   width: 720px;
   max-width: calc(100% - 2em);
@@ -80,6 +86,7 @@ h6 {
   line-height: 1.2;
 }
 
+/* Keep desktop sizing; mobile will override below */
 h1 { font-size: 3.052em; }
 h2 { font-size: 2.441em; }
 h3 { font-size: 1.953em; }
@@ -93,7 +100,7 @@ b {
 
 /* Text */
 p {
-  margin-bottom: 1em;
+  margin: 0 0 1em 0;
   color: var(--muted);
 }
 
@@ -236,7 +243,7 @@ hr {
   transform: translateY(1px);
 }
 
-/* Ticket tiles (big clickable boxes) */
+/* Ticket tiles */
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -262,10 +269,7 @@ hr {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Two-line tile titles like:
-   Maintenance
-   Ticket
-*/
+/* Two-line tile titles */
 .tile h2 {
   display: flex;
   flex-direction: column;
@@ -286,19 +290,45 @@ hr {
   opacity: 0.9;
 }
 
+/* If you want a single centered tile (e.g., Home) */
+.tile--single {
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+/* Responsive (desktop stays the same; only reduces on small screens) */
 @media (max-width: 900px) {
   .tile-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Responsive */
-@media (max-width: 720px) {
-  body {
-    font-size: 18px;
-  }
+/* Mobile-only fixes (prevents overflow/cropping like your screenshot) */
+@media (max-width: 600px) {
   main {
-    padding: 1em;
+    padding: 1.25rem 0.75rem;
+    max-width: 100%;
+  }
+
+  /* Make big headings fit on mobile without affecting desktop */
+  h1 {
+    font-size: 2.2em;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+
+  .tile {
+    width: 100%;
+    padding: 1.1rem;
+  }
+
+  .tile--single {
+    max-width: none;
   }
 }
 
