@@ -1,6 +1,6 @@
 /*
-  Yellowstone QSR - Dark Theme (site-wide)
-  Replaces the Bear Blog light defaults with a dark UI closer to the OTP form styling.
+  Yellowstone QSR - Global Styles (Dark Theme)
+  Clean, deduped, consistent styling for pages + forms + tiles.
 */
 
 :root {
@@ -22,6 +22,7 @@
   --shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
 }
 
+/* Fonts */
 @font-face {
   font-family: "Atkinson";
   src: url("/fonts/atkinson-regular.woff") format("woff");
@@ -59,6 +60,7 @@ body {
   line-height: 1.7;
 }
 
+/* Default content wrapper */
 main {
   width: 720px;
   max-width: calc(100% - 2em);
@@ -212,6 +214,7 @@ hr {
   padding: 2rem;
 }
 
+/* Buttons */
 .btn {
   display: inline-block;
   background: var(--accent);
@@ -231,6 +234,62 @@ hr {
 
 .btn:active {
   transform: translateY(1px);
+}
+
+/* Ticket tiles (big clickable boxes) */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.tile {
+  display: block;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  color: var(--text);
+  transition: transform 0.12s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Two-line tile titles like:
+   Maintenance
+   Ticket
+*/
+.tile h2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.tile h2 span:first-child {
+  font-weight: 700;
+}
+
+.tile h2 span:last-child {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+@media (max-width: 900px) {
+  .tile-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Responsive */
@@ -257,61 +316,3 @@ hr {
   clip-path: inset(50%);
   white-space: nowrap;
 }
-/* Buttons */
-.btn{
-  display: inline-block;
-  background: var(--accent);
-  color: var(--bg);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 0.7rem 1.2rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background-color .2s ease, color .2s ease, transform .08s ease;
-}
-
-.btn:hover{
-  background: transparent;
-  color: var(--text);
-}
-
-.btn:active{
-  transform: translateY(1px);
-}
-
-/* Ticket tiles (big clickable boxes) */
-.tile-grid{
-  display: grid;
-  grid-template-columns: repeat(3, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.tile{
-  display: block;
-  text-decoration: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1.25rem;
-  color: var(--text);
-  transition: transform .12s ease, border-color .2s ease, background-color .2s ease;
-}
-
-.tile:hover{
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,.25);
-  background: rgba(255,255,255,.03);
-}
-
-.tile h2{
-  margin: 0;
-  font-size: 1.15rem;
-  color: var(--text);
-}
-
-@media (max-width: 900px){
-  .tile-grid{ grid-template-columns: 1fr; }
-}
-
