@@ -212,3 +212,9 @@ hr {
 @media (max-width: 600px) {
   main {
     padding: 1.25rem
+  }
+.tile {
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-align: center;
+}
