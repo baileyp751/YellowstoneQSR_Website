@@ -25,12 +25,14 @@
   font-family: "Atkinson";
   src: url("/fonts/atkinson-regular.woff") format("woff");
   font-weight: 400;
+  font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Atkinson";
   src: url("/fonts/atkinson-bold.woff") format("woff");
   font-weight: 700;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -115,7 +117,7 @@ a:hover {
   width: 100%;
 }
 
-/* Tiles (adaptive: 1 tile centers, 2 tiles align, 3 tiles fit) */
+/* Tiles (adaptive, avoids blank “ghost” column) */
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -211,10 +213,31 @@ hr {
 /* Mobile */
 @media (max-width: 600px) {
   main {
-    padding: 1.25rem
+    padding: 1.25rem 0.75rem;
   }
-.tile {
-  font-weight: 700;
-  font-size: 1.15rem;
-  text-align: center;
+
+  h1 {
+    font-size: 2.1em;
+    line-height: 1.05;
+    word-break: break-word;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+
+  .tile {
+    max-width: 100%;
+  }
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
