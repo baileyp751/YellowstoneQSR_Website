@@ -3,9 +3,6 @@
   Mobile-safe, desktop-consistent, no fixed widths.
 */
 
-/* ======================
-   CSS Variables
-====================== */
 :root {
   --bg: #0b0d10;
   --surface: #14171c;
@@ -23,16 +20,13 @@
   --shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* ======================
-   Fonts
-====================== */
+/* Fonts */
 @font-face {
   font-family: "Atkinson";
   src: url("/fonts/atkinson-regular.woff") format("woff");
   font-weight: 400;
   font-display: swap;
 }
-
 @font-face {
   font-family: "Atkinson";
   src: url("/fonts/atkinson-bold.woff") format("woff");
@@ -40,9 +34,7 @@
   font-display: swap;
 }
 
-/* ======================
-   Base Reset
-====================== */
+/* Base reset */
 *,
 *::before,
 *::after {
@@ -65,9 +57,7 @@ body {
   font-size: 20px;
 }
 
-/* ======================
-   Layout
-====================== */
+/* Layout */
 main {
   width: 100%;
   max-width: 900px;
@@ -75,9 +65,7 @@ main {
   padding: 3em 1.5em;
 }
 
-/* ======================
-   Typography
-====================== */
+/* Typography */
 h1,
 h2,
 h3,
@@ -105,23 +93,19 @@ b {
   font-weight: 700;
 }
 
-/* ======================
-   Links
-====================== */
+/* Links */
 a {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(255,255,255,.35);
+  text-decoration-color: rgba(255, 255, 255, 0.35);
 }
 
 a:hover {
-  text-decoration-color: rgba(255,255,255,.7);
+  text-decoration-color: rgba(255, 255, 255, 0.7);
 }
 
-/* ======================
-   Cards
-====================== */
+/* Card */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -131,64 +115,42 @@ a:hover {
   width: 100%;
 }
 
-/* ======================
-   Buttons
-====================== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent);
-  color: var(--bg);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 0.75rem 1.4rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.15s ease;
-}
-
-.btn:hover {
-  background: transparent;
-  color: var(--text);
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-/* ======================
-   Tiles (Tickets)
-====================== */
+/* Tiles (adaptive: 1 tile centers, 2 tiles align, 3 tiles fit) */
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-top: 1.75rem;
   width: 100%;
+  justify-items: center;
 }
 
 .tile {
+  width: 100%;
+  max-width: 340px;
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+
   padding: 1.4rem;
   text-decoration: none;
   color: var(--text);
+
   box-shadow: var(--shadow);
-  transition: transform .12s ease, background .2s ease, border-color .2s ease;
-  width: 100%;
+  transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .tile:hover {
   transform: translateY(-2px);
-  border-color: rgba(255,255,255,.25);
-  background: rgba(255,255,255,.03);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.03);
 }
 
+/* Two-line tile titles */
 .tile h2 {
   display: flex;
   flex-direction: column;
@@ -208,13 +170,7 @@ a:hover {
   opacity: 0.9;
 }
 
-.tile--single {
-  margin: 0 auto;
-}
-
-/* ======================
-   Forms
-====================== */
+/* Forms */
 input,
 textarea,
 select {
@@ -237,12 +193,10 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: #515a6a;
-  box-shadow: 0 0 0 3px rgba(255,255,255,.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
 }
 
-/* ======================
-   Media / Misc
-====================== */
+/* Media / misc */
 img {
   max-width: 100%;
   height: auto;
@@ -254,40 +208,7 @@ hr {
   border-top: 1px solid var(--border);
 }
 
-/* ======================
-   Responsive (Mobile)
-====================== */
-@media (max-width: 900px) {
-  .tile-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* Mobile */
 @media (max-width: 600px) {
   main {
-    padding: 1.25rem 0.75rem;
-  }
-
-  h1 {
-    font-size: 2.1em;
-    line-height: 1.05;
-    word-break: break-word;
-  }
-
-  .card {
-    padding: 1.25rem;
-  }
-}
-
-/* ======================
-   Accessibility
-====================== */
-.sr-only {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
+    padding: 1.25rem
