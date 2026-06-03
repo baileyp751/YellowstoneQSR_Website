@@ -863,8 +863,25 @@
               style="display:block;width:100%;background:transparent;border:0;padding:10px;border-radius:18px;cursor:pointer;text-align:left;color:inherit;"
             >
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:14px;">
-                <span style="color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(label)}</span>
-                <span style="color:#f8fafc;font-weight:900;flex:0 0 auto;">${count.toLocaleString()}</span>
+                <span style="
+                  color:#e2e8f0;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                  white-space:nowrap;
+                  flex:1;
+                  ">
+                    ${escapeHtml(label)}
+                  </span>
+
+                  <span style="
+                  color:#f8fafc;
+                  font-weight:900;
+                  width:50px;
+                  text-align:right;
+                  flex-shrink:0;
+                  ">
+                    ${count}
+                  </span>
               </div>
               <div style="height:8px;width:100%;border-radius:999px;overflow:hidden;background:rgba(51,65,85,0.82);">
                 <div style="height:100%;width:${width}%;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0%,#60a5fa 55%,#818cf8 100%);box-shadow:0 0 10px rgba(56,189,248,0.22);"></div>
