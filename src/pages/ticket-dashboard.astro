@@ -177,7 +177,7 @@
 
     .grid { display: grid; }
     .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-    .breakdown-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .breakdown-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 
     .metric-label { margin: 0; color: var(--muted); font-size: 14px; }
     .metric-value {
@@ -532,6 +532,13 @@
         </div>
         <div id="patchBreakdown"></div>
       </div>
+      <div class="card">
+        <div class="breakdown-card-head">
+          <h2>Open Tickets by OTP</h2>
+          <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click an OTP</span>
+        </div>
+        <div id="otpBreakdown"></div>
+      </div>
     </section>
   </div>
 
@@ -578,12 +585,38 @@
       oldestOpenNote: document.getElementById('oldestOpenNote'),
       storeBreakdown: document.getElementById('storeBreakdown'),
       patchBreakdown: document.getElementById('patchBreakdown'),
+      otpBreakdown: document.getElementById('otpBreakdown'),
       ticketModal: document.getElementById('ticketModal'),
       modalTitle: document.getElementById('modalTitle'),
       modalSubtitle: document.getElementById('modalSubtitle'),
       modalTicketList: document.getElementById('modalTicketList'),
       closeModal: document.getElementById('closeModal')
     };
+
+    function cleanText(value, fallback = '') {
+      if (value === null || value === undefined || value === '') return fallback;
+
+      if (Array.isArray(value)) {
+        const values = value.map(v => cleanText(v, '')).filter(Boolean);
+        return values.length ? values.join(', ') : fallback;
+      }
+
+      if (typeof value === 'object') {
+        return cleanText(
+          value.display_name ||
+          value.displayName ||
+          value.name ||
+          value.title ||
+          value.email ||
+          value['OTP Name'] ||
+          value['Name'] ||
+          '',
+          fallback
+        );
+      }
+
+      return String(value).trim() || fallback;
+    }
 
     function normalizeRecord(record) {
       const f = record.fields || record;
@@ -606,7 +639,7 @@
         modified: f['Last Modified'] || f['Last modified time'] || f['Last Modified Time'] || f.Updated || f['Updated At'] || null,
         store: f['Store Name/Number'] || f['Store Number - Name'] || 'No Store Listed',
         patch: f.Patch || f['Supervisor Patch'] || 'No Patch Listed',
-        assigned: f['OTP Name Link'] || f['OTP Assigned'] || '',
+        assigned: cleanText(f['OTP Name Link'] || f['OTP Assigned'] || f['OTP Name'] || f['Assigned OTP'], 'No OTP Listed'),
         hasAttachment: Array.isArray(f.Attachment) && f.Attachment.length > 0
       };
     }
@@ -733,28 +766,47 @@
       const openOnly = state.open;
       renderBreakdown(els.storeBreakdown, countBy(openOnly, 'store'), 'store');
       renderBreakdown(els.patchBreakdown, countBy(openOnly, 'patch'), 'patch');
+      renderBreakdown(els.otpBreakdown, countBy(openOnly, 'assigned'), 'otp');
     }
-   function renderBreakdown(container, counts, type) {
-  const entries = sortedEntries(counts);
-  const max = Math.max(...entries.map(e => e[1]), 1);
 
-  container.innerHTML = entries.length ? entries.map(([label, count]) => `
-    <button class="breakdown-row" data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}">
-      <div class="breakdown-row-top">
-        <span class="breakdown-label">${escapeHtml(label)}</span>
-        <span class="breakdown-count">${count.toLocaleString()}</span>
-      </div>
-      <div class="breakdown-track">
-        <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
-      </div>
-    </button>
-  `).join('') : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
-}
+    function renderBreakdown(container, counts, type) {
+      const entries = sortedEntries(counts);
+      const max = Math.max(...entries.map(e => e[1]), 1);
+      const title = type === 'store'
+        ? 'View open tickets for this store'
+        : type === 'otp'
+          ? 'View open tickets for this OTP'
+          : 'View open tickets for this patch';
+
+      container.innerHTML = entries.length ? entries.map(([label, count]) => `
+        <button class="breakdown-row" data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}" title="${title}">
+          <div class="breakdown-row-top">
+            <span class="breakdown-label">${escapeHtml(label)}</span>
+            <span class="breakdown-count">${count.toLocaleString()}</span>
+          </div>
+          <div class="breakdown-track">
+            <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
+          </div>
+        </button>
+      `).join('') : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
+    }
 
     function quickBreakdown(type, label) {
-      const tickets = sortTicketsForModal(state.open.filter(t => type === 'store' ? t.store === label : t.patch === label));
-      const modalColumns = type === 'store' ? ['ticket', 'reporter', 'status', 'category', 'age'] : ['ticket', 'store', 'reporter', 'status', 'category', 'age'];
-      const titleType = type === 'store' ? 'Store' : 'Supervisor Patch';
+      const tickets = sortTicketsForModal(state.open.filter(t => {
+        if (type === 'store') return t.store === label;
+        if (type === 'otp') return t.assigned === label;
+        return t.patch === label;
+      }));
+
+      const modalColumns = type === 'store'
+        ? ['ticket', 'issue', 'status', 'category', 'age']
+        : ['ticket', 'store', 'issue', 'status', 'category', 'age'];
+
+      const titleType = type === 'store'
+        ? 'Store'
+        : type === 'otp'
+          ? 'OTP'
+          : 'Supervisor Patch';
 
       els.modalTitle.textContent = `${titleType}: ${label}`;
       els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} open ticket${tickets.length === 1 ? '' : 's'}.`;
@@ -770,7 +822,7 @@
 
       if (!items.length) return '<div style="padding:16px; color:#94a3b8; font-size:14px;">No tickets found.</div>';
 
-      const headers = { ticket: 'Ticket', store: 'Store', reporter: 'Reporter', patch: 'Patch', status: 'Status', category: 'Category', age: 'Age / Closed' };
+      const headers = { ticket: 'Ticket', store: 'Store', reporter: 'Reporter', issue: 'Issue', patch: 'Patch', status: 'Status', category: 'Category', age: 'Age / Closed' };
       const rows = items.slice(0, limit).map(ticket => `
         <tr class="table-row">
           ${columns.map(col => `<td>${cellValue(ticket, col, clickableTickets)}</td>`).join('')}
@@ -798,6 +850,7 @@
       }
       if (col === 'store') return escapeHtml(ticket.store);
       if (col === 'reporter') return escapeHtml(ticket.reporter || 'Unknown');
+      if (col === 'issue') return escapeHtml(ticket.issue || 'No issue entered');
       if (col === 'patch') return escapeHtml(ticket.patch);
       if (col === 'status') return `<span class="pill" style="padding:4px 8px; font-size:12px;">${escapeHtml(ticket.status)}</span>`;
       if (col === 'category') return escapeHtml(ticket.category);
@@ -907,6 +960,7 @@
     els.refreshBtn.addEventListener('click', loadDashboard);
     els.storeBreakdown.addEventListener('click', handleBreakdownClick);
     els.patchBreakdown.addEventListener('click', handleBreakdownClick);
+    els.otpBreakdown.addEventListener('click', handleBreakdownClick);
     els.modalTicketList.addEventListener('click', handleTicketDetailClick);
     els.closeModal.addEventListener('click', closeTicketModal);
     els.ticketModal.addEventListener('click', event => { if (event.target === els.ticketModal) closeTicketModal(); });
