@@ -412,6 +412,55 @@
       .period-controls,
       .ticket-detail-grid { grid-template-columns: 1fr; }
       #dashboardTitle { font-size: 34px; }
+    .breakdown-row {
+  display: block !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+
+.breakdown-row:hover {
+  background: rgba(30, 41, 59, 0.72) !important;
+}
+
+.breakdown-row-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 6px !important;
+  font-size: 14px !important;
+}
+
+.breakdown-label {
+  color: #e2e8f0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.breakdown-count {
+  color: #f8fafc !important;
+  font-weight: 900 !important;
+}
+
+.breakdown-track {
+  height: 8px !important;
+  width: 100% !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background: rgba(51, 65, 85, 0.82) !important;
+}
+
+.breakdown-fill {
+  height: 100% !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 55%, #818cf8 100%) !important;
+}
     }
   </style>
 </head>
@@ -825,37 +874,30 @@
         : '0%';
     }
 
-    function renderBreakdowns() {
-      const openOnly = state.open;
-
-      renderBreakdown(els.storeBreakdown, countBy(openOnly, 'store'), 'store');
-      renderBreakdown(els.patchBreakdown, countBy(openOnly, 'patch'), 'patch');
-      renderBreakdown(els.otpBreakdown, countBy(openOnly, 'otp'), 'otp');
-    }
-
     function renderBreakdown(container, counts, type) {
-      const entries = sortedEntries(counts);
-      const max = Math.max(...entries.map(e => e[1]), 1);
+  const entries = sortedEntries(counts);
+  const max = Math.max(...entries.map(e => e[1]), 1);
 
-      container.innerHTML = entries.length
-        ? entries.map(([label, count]) => `
-          <button
-            class="breakdown-row"
-            type="button"
-            data-breakdown-type="${escapeHtml(type)}"
-            data-breakdown-label="${escapeHtml(label)}"
-          >
-            <div class="breakdown-row-top">
-              <span class="breakdown-label">${escapeHtml(label)}</span>
-              <span class="breakdown-count">${count.toLocaleString()}</span>
-            </div>
-            <div class="breakdown-track">
-              <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
-            </div>
-          </button>
-        `).join('')
-        : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
-    }
+  container.innerHTML = entries.length
+    ? entries.map(([label, count]) => `
+      <div
+        class="breakdown-row"
+        role="button"
+        tabindex="0"
+        data-breakdown-type="${escapeHtml(type)}"
+        data-breakdown-label="${escapeHtml(label)}"
+      >
+        <div class="breakdown-row-top">
+          <span class="breakdown-label">${escapeHtml(label)}</span>
+          <span class="breakdown-count">${count.toLocaleString()}</span>
+        </div>
+        <div class="breakdown-track">
+          <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
+        </div>
+      </div>
+    `).join('')
+    : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
+}
 
     function sortTicketsForModal(tickets) {
       return tickets.sort((a, b) => new Date(a.created || 0) - new Date(b.created || 0));
