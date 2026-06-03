@@ -1,0 +1,101 @@
+---
+---
+
+<html>
+  <head>
+    <title>Ticket Dashboard</title>
+  </head>
+  <body>
+    <main class="dashboard">
+      <h1>Technology Ticket Dashboard</h1>
+
+      <select id="range">
+        <option value="currentMonth">Current Month</option>
+        <option value="lastMonth">Last Month</option>
+        <option value="last7">Last 7 Days</option>
+        <option value="last30" selected>Last 30 Days</option>
+        <option value="last90">Last 90 Days</option>
+        <option value="all">All Time</option>
+      </select>
+
+      <section class="cards">
+        <div><span>Open Tickets</span><strong id="open">-</strong></div>
+        <div><span>Closed Tickets</span><strong id="closed">-</strong></div>
+        <div><span>Total Tickets</span><strong id="total">-</strong></div>
+        <div><span>Oldest Open</span><strong id="oldest">-</strong></div>
+      </section>
+
+      <section class="cards">
+        <div><span>Tickets Opened</span><strong id="opened">-</strong></div>
+        <div><span>Tickets Closed</span><strong id="closedRange">-</strong></div>
+        <div><span>Close Rate</span><strong id="rate">-</strong></div>
+      </section>
+    </main>
+
+    <script>
+      async function loadDashboard() {
+        const range = document.getElementById("range").value;
+        const res = await fetch(`/api/ticket-dashboard?range=${range}`);
+        const data = await res.json();
+
+        document.getElementById("open").textContent = data.overview.openTickets;
+        document.getElementById("closed").textContent = data.overview.closedTickets;
+        document.getElementById("total").textContent = data.overview.totalTickets;
+        document.getElementById("oldest").textContent =
+          data.overview.oldestOpen
+            ? `${data.overview.oldestOpen.daysOpen} days`
+            : "-";
+
+        document.getElementById("opened").textContent = data.performance.opened;
+        document.getElementById("closedRange").textContent = data.performance.closed;
+        document.getElementById("rate").textContent = `${data.performance.closeRate}%`;
+      }
+
+      document.getElementById("range").addEventListener("change", loadDashboard);
+      loadDashboard();
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    margin: 0;
+    background: #06101f;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  .dashboard {
+    padding: 32px;
+  }
+
+  select {
+    margin: 20px 0;
+    padding: 10px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .cards div {
+    background: #111c2e;
+    border: 1px solid #263755;
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  span {
+    display: block;
+    color: #9db7dc;
+    margin-bottom: 12px;
+  }
+
+  strong {
+    font-size: 36px;
+  }
+</style>
