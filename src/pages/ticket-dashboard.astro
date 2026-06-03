@@ -41,6 +41,7 @@
         document.getElementById("open").textContent = data.overview.openTickets;
         document.getElementById("closed").textContent = data.overview.closedTickets;
         document.getElementById("total").textContent = data.overview.totalTickets;
+        console.log("range:", range, data);
         document.getElementById("oldest").textContent =
           data.overview.oldestOpen
             ? `${data.overview.oldestOpen.daysOpen} days`
