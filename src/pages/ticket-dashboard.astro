@@ -17,39 +17,40 @@
     .table-row:hover { background: rgba(51, 65, 85, .48); }
     .bar-bg { background: rgba(51, 65, 85, .75); }
     .bar { background: linear-gradient(90deg, #38bdf8, #818cf8); }
+    @keyframes pulseGreen {
+      0%, 100% { box-shadow: inset 0 0 0 1px rgba(34,197,94,.35), 0 0 0 rgba(34,197,94,0); }
+      50% { box-shadow: inset 0 0 0 1px rgba(34,197,94,.85), 0 0 18px rgba(34,197,94,.18); }
+    }
+    .visit-in-progress { background: rgba(20, 83, 45, .16); animation: pulseGreen 2.4s ease-in-out infinite; }
   </style>
 </head>
-
 <body class="min-h-screen text-slate-100">
   <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
     <header class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
       <div class="max-w-4xl">
-        <p class="text-sm uppercase tracking-[0.25em] text-sky-300">Yellowstone QSR</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Technology Ticket Dashboard</h1>
-        <p class="mt-3 max-w-3xl text-sm text-slate-400">
-          Live dashboard pulling ticket data from the main NocoDB technology support table.
-        </p>
-
+        <p id="organizationName" class="text-sm uppercase tracking-[0.25em] text-sky-300">Organization Name</p>
+        <h1 id="dashboardTitle" class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Technology Ticket Dashboard</h1>
+        <div class="mt-3 flex flex-wrap items-center gap-3">
+          <p class="max-w-3xl text-sm text-slate-400">Live dashboard pulling open and closed ticket views from NocoDB. Counts update automatically as tickets are added, changed, or closed.</p>
+        </div>
         <div class="mt-4 rounded-2xl border border-slate-700/60 bg-slate-950/60 p-4 text-sm text-slate-300">
           <div class="mb-2 font-bold text-slate-100">How to Read This Dashboard</div>
           <ul class="space-y-1 text-sm text-slate-400">
             <li>• Performance Metrics are based on the selected performance period.</li>
             <li>• Organization Overview is all-time and does not change with filters.</li>
-            <li>• Open Tickets = anything not archived.</li>
-            <li>• Closed Tickets = archived tickets.</li>
-            <li>• Click a store or patch to drill into matching tickets.</li>
+            <li>• Open Tickets = any ticket not currently closed.</li>
+            <li>• Upcoming Onsite Visits = future scheduled onsite visits.</li>
+            <li>• Overdue Onsite Visits = onsite visits with past dates still unresolved.</li>
+            <li>• Click a store or supervisor patch to drill into tickets, then click a ticket number for details.</li>
           </ul>
         </div>
       </div>
-
       <div class="flex flex-wrap items-center gap-3">
         <div class="soft rounded-2xl px-4 py-3 text-sm text-slate-300">
           <div class="text-xs uppercase tracking-wide text-slate-500">Last Updated</div>
           <div id="lastUpdated" class="font-semibold text-slate-100">Loading...</div>
         </div>
-        <button id="refreshBtn" class="rounded-2xl bg-sky-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-sky-950/40 hover:bg-sky-400">
-          Refresh
-        </button>
+        <button id="refreshBtn" class="rounded-2xl bg-sky-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-sky-950/40 hover:bg-sky-400">Refresh</button>
       </div>
     </header>
 
@@ -61,7 +62,6 @@
           <h2 class="text-xl font-bold">Performance Metrics</h2>
           <p id="performanceSubtitle" class="text-sm text-slate-400">Metrics based on the selected performance period.</p>
         </div>
-
         <div class="grid gap-3 sm:grid-cols-3">
           <label class="block">
             <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Performance Period</span>
@@ -69,48 +69,42 @@
               <option value="currentMonth">Current Month</option>
               <option value="lastMonth">Last Month</option>
               <option value="last7">Last 7 Days</option>
-              <option value="last30" selected>Last 30 Days</option>
+              <option value="last30">Last 30 Days</option>
               <option value="last90">Last 90 Days</option>
               <option value="all">All Time</option>
               <option value="custom">Custom Range</option>
             </select>
           </label>
-
           <label class="block">
             <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Start Date</span>
             <input id="performanceStartDate" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" />
           </label>
-
           <label class="block">
             <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">End Date</span>
             <input id="performanceEndDate" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" />
           </label>
         </div>
       </div>
-
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Tickets Opened</p>
           <div id="perfOpened" class="mt-2 text-4xl font-black">--</div>
           <p class="mt-2 text-xs text-slate-500">Created in period</p>
         </div>
-
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Tickets Closed</p>
           <div id="perfClosed" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Archived in period</p>
+          <p class="mt-2 text-xs text-slate-500">Closed in period</p>
         </div>
-
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Close Rate</p>
-          <div id="perfCloseRate" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Closed ÷ Opened</p>
-        </div>
-
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Avg Resolution</p>
           <div id="perfAvgResolution" class="mt-2 text-3xl font-black">--</div>
-          <p id="perfAvgResolutionNote" class="mt-2 text-xs text-slate-500">Created → Last Modified</p>
+          <p id="perfAvgResolutionNote" class="mt-2 text-xs text-slate-500">Requires Created + Last modified</p>
+        </div>
+        <div class="soft rounded-3xl p-5 text-center">
+          <p class="text-sm text-slate-400">Active Onsite</p>
+          <div id="perfOnsite" class="mt-2 text-4xl font-black">--</div>
+          <p class="mt-2 text-xs text-slate-500">Scheduled in period</p>
         </div>
       </div>
     </section>
@@ -120,26 +114,22 @@
         <h2 class="text-xl font-bold">Organization Overview</h2>
         <p class="text-sm text-slate-400">All-time organization health and accountability metrics.</p>
       </div>
-
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Open Tickets</p>
           <div id="openCount" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Anything not archived</p>
+          <p class="mt-2 text-xs text-slate-500">Anything not closed</p>
         </div>
-
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Closed Tickets</p>
           <div id="closedCount" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Archived tickets</p>
+          <p class="mt-2 text-xs text-slate-500">Archived / closed view</p>
         </div>
-
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Total Tickets</p>
           <div id="totalCount" class="mt-2 text-4xl font-black">--</div>
           <p class="mt-2 text-xs text-slate-500">Open + closed</p>
         </div>
-
         <div class="soft rounded-3xl p-5 text-center">
           <p class="text-sm text-slate-400">Oldest Open</p>
           <div id="oldestOpen" class="mt-2 text-3xl font-black">--</div>
@@ -148,97 +138,63 @@
       </div>
     </section>
 
+    <section class="mb-6 grid gap-6 xl:grid-cols-2">
+      <div class="card rounded-3xl p-5">
+        <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-xl font-bold">Upcoming Onsite Visits</h2>
+            <p class="text-sm text-slate-400">Future onsite visits currently marked Onsite Scheduled.</p>
+          </div>
+          <span id="upcomingOnsiteLabel" class="pill rounded-full px-3 py-1 text-xs text-slate-300">--</span>
+        </div>
+        <div id="upcomingOnsite" class="overflow-hidden rounded-2xl border border-slate-700/60"></div>
+      </div>
+
+      <div class="card rounded-3xl p-5">
+        <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-xl font-bold">Overdue Onsite Visits</h2>
+            <p class="text-sm text-slate-400">Past onsite dates that are still marked Onsite Scheduled.</p>
+          </div>
+          <span id="overdueOnsiteLabel" class="rounded-full border border-amber-400/30 bg-amber-950/40 px-3 py-1 text-xs text-amber-200">--</span>
+        </div>
+        <div id="overdueOnsite" class="overflow-hidden rounded-2xl border border-amber-400/20"></div>
+      </div>
+    </section>
+
     <section class="card mb-6 rounded-3xl p-4 sm:p-5">
       <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h2 class="text-xl font-bold">Filters</h2>
-          <p class="text-sm text-slate-400">Review open, closed, store, patch, device, ticket type, and date ranges.</p>
+          <p class="text-sm text-slate-400">Default view is open tickets and all time. Change filters to review closed tickets, stores, patches, categories, onsite scheduling, or date ranges.</p>
         </div>
-
-        <button id="clearFilters" class="rounded-xl border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800">
-          Clear Filters
-        </button>
+        <button id="clearFilters" class="rounded-xl border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800">Clear Filters</button>
       </div>
-
       <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Ticket Set</span>
-          <select id="setFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Status</span>
-          <select id="statusFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Store</span>
-          <select id="storeFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Patch</span>
-          <select id="patchFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Device</span>
-          <select id="deviceFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Ticket Type</span>
-          <select id="ticketTypeFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select>
-        </label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Ticket Set</span><select id="setFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Status</span><select id="statusFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Store</span><select id="storeFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Supervisor Area / Patch</span><select id="patchFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Category</span><select id="categoryFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Onsite</span><select id="onsiteFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"><option value="all">All Tickets</option><option value="scheduled">Onsite Scheduled</option><option value="notScheduled">Not Scheduled</option></select></label>
       </div>
-
       <div class="mt-3 grid gap-3 md:grid-cols-4">
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Ticket Date Range</span>
-          <select id="dateRangeFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm">
-            <option value="all">All Time</option>
-            <option value="currentMonth">Current Month</option>
-            <option value="lastMonth">Last Month</option>
-            <option value="last7">Last 7 Days</option>
-            <option value="last30">Last 30 Days</option>
-            <option value="last90">Last 90 Days</option>
-            <option value="custom">Custom Range</option>
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Start Date</span>
-          <input id="startDateFilter" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" />
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">End Date</span>
-          <input id="endDateFilter" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" />
-        </label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Ticket Date Range</span><select id="dateRangeFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"><option value="all">All Time</option><option value="thisMonth">This Month</option><option value="lastMonth">Last Month</option><option value="last7">Last 7 Days</option><option value="last30">Last 30 Days</option><option value="last90">Last 90 Days</option><option value="custom">Custom Range</option></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Start Date</span><input id="startDateFilter" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" /></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">End Date</span><input id="endDateFilter" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" /></label>
       </div>
-
       <div class="mt-3">
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Search</span>
-          <input id="searchInput" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm" placeholder="Search ticket number, issue, notes, reporter, store, status..." />
-        </label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Search</span><input id="searchInput" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm" placeholder="Search ticket number, issue, notes, reporter, store, status..." /></label>
       </div>
     </section>
 
     <section class="mb-6 grid gap-6 xl:grid-cols-2">
       <div class="card rounded-3xl p-5">
-        <div class="mb-4 flex items-center justify-between gap-3">
-          <h2 class="text-xl font-bold">Tickets by Store</h2>
-          <span class="pill rounded-full px-3 py-1 text-xs text-slate-300">Click a store</span>
-        </div>
+        <div class="mb-4 flex items-center justify-between gap-3"><h2 class="text-xl font-bold">Tickets by Store</h2><span class="pill rounded-full px-3 py-1 text-xs text-slate-300">Click a store</span></div>
         <div id="storeBreakdown" class="max-h-[650px] space-y-2 overflow-y-auto pr-2"></div>
       </div>
-
       <div class="card rounded-3xl p-5">
-        <div class="mb-4 flex items-center justify-between gap-3">
-          <h2 class="text-xl font-bold">Tickets by Patch</h2>
-          <span class="pill rounded-full px-3 py-1 text-xs text-slate-300">Click a patch</span>
-        </div>
+        <div class="mb-4 flex items-center justify-between gap-3"><h2 class="text-xl font-bold">Tickets by Supervisor Area / Patch</h2><span class="pill rounded-full px-3 py-1 text-xs text-slate-300">Click a patch</span></div>
         <div id="patchBreakdown" class="max-h-[650px] space-y-2 overflow-y-auto pr-2"></div>
       </div>
     </section>
@@ -247,135 +203,103 @@
   <div id="ticketModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
     <div class="card flex max-h-[90vh] w-full max-w-6xl flex-col rounded-3xl">
       <div class="flex items-start justify-between gap-4 border-b border-slate-700/60 p-5">
-        <div>
-          <h2 id="modalTitle" class="text-2xl font-bold">Tickets</h2>
-          <p id="modalSubtitle" class="mt-1 text-sm text-slate-400"></p>
-        </div>
-        <button id="closeModal" class="rounded-xl border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800">
-          Close
-        </button>
+        <div><h2 id="modalTitle" class="text-2xl font-bold">Tickets</h2><p id="modalSubtitle" class="mt-1 text-sm text-slate-400"></p></div>
+        <button id="closeModal" class="rounded-xl border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800">Close</button>
       </div>
       <div id="modalTicketList" class="overflow-auto p-5"></div>
     </div>
   </div>
 
   <script>
+    // =========================
+    // DASHBOARD SETUP
+    // =========================
+    // Replace these values with your organization's information.
+    //
+    // openUrl:   NocoDB API URL/view for open tickets
+    // closedUrl: NocoDB API URL/view for closed or archived tickets
+    // apiKey:    NocoDB API token. Leave blank if your URL is already behind an API proxy.
+    // apiKeyHeader: Most NocoDB setups use 'xc-token'. If your API uses Authorization Bearer,
+    //               change apiKeyHeader to 'Authorization' and apiKeyPrefix to 'Bearer '.
     const CONFIG = {
+      organizationName: 'Yellowstone QSR',
+      dashboardTitle: 'Technology Ticket Dashboard',
       apiUrl: '/api/ticket-dashboard',
       refreshMinutes: 5
     };
 
-    const state = {
-      all: [],
-      open: [],
-      closed: [],
-      filtered: []
-    };
-
+    const state = { open: [], closed: [], all: [], filtered: [], upcomingOnsiteGroups: [], overdueOnsiteGroups: [] };
     const els = {
-      lastUpdated: document.getElementById('lastUpdated'),
-      errorBox: document.getElementById('errorBox'),
-      refreshBtn: document.getElementById('refreshBtn'),
-
-      perfOpened: document.getElementById('perfOpened'),
-      perfClosed: document.getElementById('perfClosed'),
-      perfCloseRate: document.getElementById('perfCloseRate'),
-      perfAvgResolution: document.getElementById('perfAvgResolution'),
-      perfAvgResolutionNote: document.getElementById('perfAvgResolutionNote'),
-      performanceSubtitle: document.getElementById('performanceSubtitle'),
-      performancePeriodFilter: document.getElementById('performancePeriodFilter'),
-      performanceStartDate: document.getElementById('performanceStartDate'),
-      performanceEndDate: document.getElementById('performanceEndDate'),
-
-      openCount: document.getElementById('openCount'),
-      closedCount: document.getElementById('closedCount'),
-      totalCount: document.getElementById('totalCount'),
-      oldestOpen: document.getElementById('oldestOpen'),
-      oldestOpenNote: document.getElementById('oldestOpenNote'),
-
-      setFilter: document.getElementById('setFilter'),
-      statusFilter: document.getElementById('statusFilter'),
-      storeFilter: document.getElementById('storeFilter'),
-      patchFilter: document.getElementById('patchFilter'),
-      deviceFilter: document.getElementById('deviceFilter'),
-      ticketTypeFilter: document.getElementById('ticketTypeFilter'),
-      dateRangeFilter: document.getElementById('dateRangeFilter'),
-      startDateFilter: document.getElementById('startDateFilter'),
-      endDateFilter: document.getElementById('endDateFilter'),
-      searchInput: document.getElementById('searchInput'),
-      clearFilters: document.getElementById('clearFilters'),
-
-      storeBreakdown: document.getElementById('storeBreakdown'),
-      patchBreakdown: document.getElementById('patchBreakdown'),
-
-      ticketModal: document.getElementById('ticketModal'),
-      modalTitle: document.getElementById('modalTitle'),
-      modalSubtitle: document.getElementById('modalSubtitle'),
-      modalTicketList: document.getElementById('modalTicketList'),
-      closeModal: document.getElementById('closeModal')
+      lastUpdated: document.getElementById('lastUpdated'), errorBox: document.getElementById('errorBox'), refreshBtn: document.getElementById('refreshBtn'), 
+      perfOpened: document.getElementById('perfOpened'), perfClosed: document.getElementById('perfClosed'), perfAvgResolution: document.getElementById('perfAvgResolution'), perfAvgResolutionNote: document.getElementById('perfAvgResolutionNote'), perfOnsite: document.getElementById('perfOnsite'), performanceSubtitle: document.getElementById('performanceSubtitle'), performancePeriodFilter: document.getElementById('performancePeriodFilter'), performanceStartDate: document.getElementById('performanceStartDate'), performanceEndDate: document.getElementById('performanceEndDate'),
+      openCount: document.getElementById('openCount'), closedCount: document.getElementById('closedCount'), totalCount: document.getElementById('totalCount'), oldestOpen: document.getElementById('oldestOpen'), oldestOpenNote: document.getElementById('oldestOpenNote'),
+      upcomingOnsite: document.getElementById('upcomingOnsite'), upcomingOnsiteLabel: document.getElementById('upcomingOnsiteLabel'), overdueOnsite: document.getElementById('overdueOnsite'), overdueOnsiteLabel: document.getElementById('overdueOnsiteLabel'),
+      setFilter: document.getElementById('setFilter'), statusFilter: document.getElementById('statusFilter'), storeFilter: document.getElementById('storeFilter'), patchFilter: document.getElementById('patchFilter'), categoryFilter: document.getElementById('categoryFilter'), onsiteFilter: document.getElementById('onsiteFilter'), dateRangeFilter: document.getElementById('dateRangeFilter'), startDateFilter: document.getElementById('startDateFilter'), endDateFilter: document.getElementById('endDateFilter'), searchInput: document.getElementById('searchInput'), clearFilters: document.getElementById('clearFilters'),
+      storeBreakdown: document.getElementById('storeBreakdown'), patchBreakdown: document.getElementById('patchBreakdown'), ticketModal: document.getElementById('ticketModal'), modalTitle: document.getElementById('modalTitle'), modalSubtitle: document.getElementById('modalSubtitle'), modalTicketList: document.getElementById('modalTicketList'), closeModal: document.getElementById('closeModal')
     };
 
     function normalizeRecord(record) {
       const f = record.fields || record;
       const archived = f.Archived === 1 || f.Archived === true || f.Archived === "1";
+      const source = archived ? 'closed' : 'open';
+      const status = f.Status || (archived ? 'Closed' : 'New Ticket');
 
       return {
         raw: record,
-        source: archived ? 'closed' : 'open',
+        source,
         id: record.id || f.Id,
         ticketNumber: f['Ticket Number'] ?? f.Id ?? record.id,
         archived: archived ? 1 : 0,
-        status: f.Status || (archived ? 'Closed' : 'New Ticket'),
+        status,
         reporter: f['Reporter Name'] || '',
-        device: f['Device Affected'] || 'Uncategorized',
-        ticketType: f['Ticket Type'] || 'Uncategorized',
+        category: f['Device Affected'] || f.Category || 'Uncategorized',
         issue: f['Issue Description'] || '',
         notes: f.Notes || '',
-        created: f.Created || null,
-        modified: f['Last Modified'] || null,
-        store: f['Store Name/Number'] || 'No Store Listed',
-        patch: f.Patch || 'No Patch Listed',
+        created: f.Created || f['Created time'] || f['Created Time'] || f['Created At'] || null,
+        modified: f['Last Modified'] || f['Last modified time'] || f['Last Modified Time'] || f.Updated || f['Updated At'] || null,
+        store: f['Store Name/Number'] || f['Store Number - Name'] || 'No Store Listed',
+        patch: f.Patch || f['Supervisor Patch'] || 'No Patch Listed',
+        onsite: f['Onsite Schedule'] || null,
+        assigned: f['OTP Name Link'] || f['OTP Assigned'] || '',
         hasAttachment: Array.isArray(f.Attachment) && f.Attachment.length > 0
       };
     }
 
-    function escapeHtml(value) {
-      return String(value ?? '').replace(/[&<>'"]/g, c => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-      }[c]));
+    function addOrReplaceParam(url, key, value) { const u = new URL(url); u.searchParams.set(key, value); return u.toString(); }
+    async function fetchRecords(baseUrl) {
+      let url = baseUrl, records = [], guard = 0;
+      while (url && guard < 20) {
+        guard++;
+        const headers = {};
+        if (CONFIG.apiKey && !CONFIG.apiKey.startsWith('PASTE_')) {
+          headers[CONFIG.apiKeyHeader || 'xc-token'] = `${CONFIG.apiKeyPrefix || ''}${CONFIG.apiKey}`;
+        }
+        const response = await fetch(url, { headers });
+        if (!response.ok) throw new Error(`NocoDB request failed (${response.status}) for ${url}`);
+        const data = await response.json();
+        records = records.concat(data.records || data.list || []);
+        const next = data.nestedNext || data.next || data.nextPage || data.pageInfo?.nextPage;
+        const isLast = data.pageInfo?.isLastPage === true;
+        if (!next || isLast) break;
+        if (typeof next === 'string' && next.startsWith('http')) url = next;
+        else if (typeof next === 'string') url = addOrReplaceParam(baseUrl, 'nestedNext', next);
+        else if (typeof next === 'number') url = addOrReplaceParam(baseUrl, 'page', next);
+        else break;
+      }
+      return records;
     }
 
-    function formatDate(value) {
-      if (!value) return '';
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return value;
-      return d.toLocaleString([], {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit'
-      });
-    }
-
-    function formatAge(value) {
-      if (!value) return 'Unknown';
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return 'Unknown';
-      const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-      if (days < 1) return 'Today';
-      if (days === 1) return '1 day';
-      return `${days} days`;
-    }
-
-    function formatDuration(ms) {
-      if (!Number.isFinite(ms) || ms < 0) return 'Unavailable';
-      const hours = ms / 3600000;
-      return hours < 48 ? `${hours.toFixed(1)} hrs` : `${(hours / 24).toFixed(1)} days`;
+    function countBy(items, key) { return items.reduce((acc, item) => { const v = item[key] || 'Blank'; acc[v] = (acc[v] || 0) + 1; return acc; }, {}); }
+    function sortedEntries(obj) { return Object.entries(obj).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])); }
+    function uniqueSorted(items, key) { return [...new Set(items.map(item => item[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b)); }
+    function escapeHtml(value) { return String(value ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+    function formatDate(value) { if (!value) return ''; const d = new Date(value); if (Number.isNaN(d.getTime())) return value; return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }); }
+    function formatAge(value) { if (!value) return 'Unknown'; const d = new Date(value); if (Number.isNaN(d.getTime())) return 'Unknown'; const days = Math.floor((Date.now() - d.getTime()) / 86400000); if (days < 1) return 'Today'; if (days === 1) return '1 day'; return `${days} days`; }
+    function formatDuration(ms) { if (!Number.isFinite(ms) || ms < 0) return 'Unavailable'; const hours = ms / 3600000; return hours < 48 ? `${hours.toFixed(1)} hrs` : `${(hours / 24).toFixed(1)} days`; }
+    function averageClosureTime(closed) {
+      const durations = closed.map(t => { if (!t.created || !t.modified) return null; const s = new Date(t.created).getTime(), e = new Date(t.modified).getTime(); return Number.isFinite(s) && Number.isFinite(e) && e >= s ? e - s : null; }).filter(v => v !== null);
+      if (!durations.length) return { text: 'Unavailable', count: 0 };
+      return { text: formatDuration(durations.reduce((a, b) => a + b, 0) / durations.length), count: durations.length };
     }
 
     function getMonthBounds(offset = 0) {
@@ -384,173 +308,62 @@
       const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0, 23, 59, 59, 999);
       return { start, end };
     }
-
     function getPeriodBounds(type, startValue, endValue) {
-      let start = null;
-      let end = null;
-      let label = 'All Time';
-
-      if (type === 'currentMonth') {
-        ({ start, end } = getMonthBounds(0));
-        label = start.toLocaleString([], { month: 'long', year: 'numeric' });
-      }
-
-      if (type === 'lastMonth') {
-        ({ start, end } = getMonthBounds(-1));
-        label = start.toLocaleString([], { month: 'long', year: 'numeric' });
-      }
-
-      if (type === 'last7') {
-        end = new Date();
-        start = new Date();
-        start.setDate(start.getDate() - 7);
-        label = 'Last 7 Days';
-      }
-
-      if (type === 'last30') {
-        end = new Date();
-        start = new Date();
-        start.setDate(start.getDate() - 30);
-        label = 'Last 30 Days';
-      }
-
-      if (type === 'last90') {
-        end = new Date();
-        start = new Date();
-        start.setDate(start.getDate() - 90);
-        label = 'Last 90 Days';
-      }
-
-      if (type === 'custom') {
-        start = startValue ? new Date(`${startValue}T00:00:00`) : null;
-        end = endValue ? new Date(`${endValue}T23:59:59`) : null;
-        label = `${startValue || '...'} → ${endValue || '...'}`;
-      }
-
+      let start = null, end = null, label = 'All Time';
+      if (type === 'currentMonth') { ({ start, end } = getMonthBounds(0)); label = start.toLocaleString([], { month: 'long', year: 'numeric' }); }
+      if (type === 'lastMonth') { ({ start, end } = getMonthBounds(-1)); label = start.toLocaleString([], { month: 'long', year: 'numeric' }); }
+      if (type === 'last7') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 7); label = 'Last 7 Days'; }
+      if (type === 'last30') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 30); label = 'Last 30 Days'; }
+      if (type === 'last90') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 90); label = 'Last 90 Days'; }
+      if (type === 'custom') { start = startValue ? new Date(`${startValue}T00:00:00`) : null; end = endValue ? new Date(`${endValue}T23:59:59`) : null; label = `${startValue || '...'} → ${endValue || '...'}`; }
       return { start, end, label };
     }
-
     function inRange(value, bounds) {
       if (!value) return false;
       if (!bounds.start && !bounds.end) return true;
-
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return false;
       if (bounds.start && d < bounds.start) return false;
       if (bounds.end && d > bounds.end) return false;
-
       return true;
     }
 
-    function averageClosureTime(closed) {
-      const durations = closed.map(t => {
-        if (!t.created || !t.modified) return null;
-        const start = new Date(t.created).getTime();
-        const end = new Date(t.modified).getTime();
-        return Number.isFinite(start) && Number.isFinite(end) && end >= start ? end - start : null;
-      }).filter(v => v !== null);
-
-      if (!durations.length) return { text: 'Unavailable', count: 0 };
-
-      const average = durations.reduce((a, b) => a + b, 0) / durations.length;
-      return { text: formatDuration(average), count: durations.length };
-    }
-
-    function countBy(items, key) {
-      return items.reduce((acc, item) => {
-        const value = item[key] || 'Blank';
-        acc[value] = (acc[value] || 0) + 1;
-        return acc;
-      }, {});
-    }
-
-    function sortedEntries(obj) {
-      return Object.entries(obj).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-    }
-
-    function uniqueSorted(items, key) {
-      return [...new Set(items.map(item => item[key]).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b));
-    }
-
-    function populateSelect(select, values, allLabel) {
-      const current = select.value;
-      select.innerHTML =
-        `<option value="all">${allLabel}</option>` +
-        values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
-
-      if ([...select.options].some(o => o.value === current)) {
-        select.value = current;
-      }
-    }
-
+    function populateSelect(select, values, allLabel) { const current = select.value; select.innerHTML = `<option value="all">${allLabel}</option>` + values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join(''); if ([...select.options].some(o => o.value === current)) select.value = current; }
     function setupFilters() {
       const currentSet = els.setFilter.value || 'open';
-
-      els.setFilter.innerHTML = `
-        <option value="all">All Tickets</option>
-        <option value="open">Open Tickets</option>
-        <option value="closed">Closed Tickets</option>
-      `;
-
+      els.setFilter.innerHTML = '<option value="all">All Tickets</option><option value="open">Open Tickets</option><option value="closed">Closed Tickets</option>';
       els.setFilter.value = currentSet;
-
       populateSelect(els.statusFilter, uniqueSorted(state.all, 'status'), 'All Statuses');
       populateSelect(els.storeFilter, uniqueSorted(state.all, 'store'), 'All Stores');
       populateSelect(els.patchFilter, uniqueSorted(state.all, 'patch'), 'All Patches');
-      populateSelect(els.deviceFilter, uniqueSorted(state.all, 'device'), 'All Devices');
-      populateSelect(els.ticketTypeFilter, uniqueSorted(state.all, 'ticketType'), 'All Ticket Types');
+      populateSelect(els.categoryFilter, uniqueSorted(state.all, 'category'), 'All Categories');
     }
-
-    function passesTicketDateFilter(ticket) {
+function passesTicketDateFilter(ticket) {
       const type = els.dateRangeFilter.value;
       if (type === 'all') return true;
-
-      const bounds = getPeriodBounds(type, els.startDateFilter.value, els.endDateFilter.value);
-      const dateSource = ticket.source === 'closed'
-        ? (ticket.modified || ticket.created)
-        : ticket.created;
-
+      const bounds = getPeriodBounds(type === 'thisMonth' ? 'currentMonth' : type, els.startDateFilter.value, els.endDateFilter.value);
+      const dateSource = ticket.source === 'closed' ? (ticket.modified || ticket.created) : ticket.created;
       return inRange(dateSource, bounds);
     }
 
     function applyFilters() {
-      const setValue = els.setFilter.value;
-      const statusValue = els.statusFilter.value;
-      const storeValue = els.storeFilter.value;
-      const patchValue = els.patchFilter.value;
-      const deviceValue = els.deviceFilter.value;
-      const ticketTypeValue = els.ticketTypeFilter.value;
-      const search = els.searchInput.value.trim().toLowerCase();
-
+      
+      const setValue = els.setFilter.value, statusValue = els.statusFilter.value, storeValue = els.storeFilter.value, patchValue = els.patchFilter.value, categoryValue = els.categoryFilter.value, onsiteValue = els.onsiteFilter.value, search = els.searchInput.value.trim().toLowerCase();
       state.filtered = state.all.filter(t => {
         if (setValue !== 'all' && t.source !== setValue) return false;
         if (statusValue !== 'all' && t.status !== statusValue) return false;
         if (storeValue !== 'all' && t.store !== storeValue) return false;
         if (patchValue !== 'all' && t.patch !== patchValue) return false;
-        if (deviceValue !== 'all' && t.device !== deviceValue) return false;
-        if (ticketTypeValue !== 'all' && t.ticketType !== ticketTypeValue) return false;
+        if (categoryValue !== 'all' && t.category !== categoryValue) return false;
+        if (onsiteValue === 'scheduled' && t.status !== 'Onsite Scheduled') return false;
+        if (onsiteValue === 'notScheduled' && t.status === 'Onsite Scheduled') return false;
         if (!passesTicketDateFilter(t)) return false;
-
         if (search) {
-          const haystack = [
-            t.ticketNumber,
-            t.status,
-            t.reporter,
-            t.device,
-            t.ticketType,
-            t.issue,
-            t.notes,
-            t.store,
-            t.patch
-          ].join(' ').toLowerCase();
-
+          const haystack = [t.ticketNumber, t.status, t.reporter, t.category, t.issue, t.notes, t.store, t.patch].join(' ').toLowerCase();
           if (!haystack.includes(search)) return false;
         }
-
         return true;
       });
-
       renderFilteredSections();
     }
 
@@ -558,242 +371,276 @@
       els.openCount.textContent = state.open.length.toLocaleString();
       els.closedCount.textContent = state.closed.length.toLocaleString();
       els.totalCount.textContent = state.all.length.toLocaleString();
-
-      const oldestTicket = [...state.open]
-        .filter(t => t.created)
-        .sort((a, b) => new Date(a.created) - new Date(b.created))[0];
-
-      if (oldestTicket) {
-        els.oldestOpen.textContent = formatAge(oldestTicket.created);
-        els.oldestOpenNote.textContent = `Ticket #${oldestTicket.ticketNumber} · ${oldestTicket.store}`;
-      } else {
-        els.oldestOpen.textContent = '--';
-        els.oldestOpenNote.textContent = 'No open tickets';
-      }
-
+      const oldestTicket = [...state.open].filter(t => t.created).sort((a, b) => new Date(a.created) - new Date(b.created))[0];
+      if (oldestTicket) { els.oldestOpen.textContent = formatAge(oldestTicket.created); els.oldestOpenNote.textContent = `Ticket #${oldestTicket.ticketNumber} · ${oldestTicket.store}`; }
+      else { els.oldestOpen.textContent = '--'; els.oldestOpenNote.textContent = 'No open tickets'; }
       renderPerformanceMetrics();
+      renderUpcomingOnsite();
     }
 
     function renderPerformanceMetrics() {
-      const bounds = getPeriodBounds(
-        els.performancePeriodFilter.value,
-        els.performanceStartDate.value,
-        els.performanceEndDate.value
-      );
-
+      const bounds = getPeriodBounds(els.performancePeriodFilter.value, els.performanceStartDate.value, els.performanceEndDate.value);
       els.performanceSubtitle.textContent = `Metrics based on ${bounds.label}.`;
-
       const opened = state.all.filter(t => inRange(t.created, bounds));
       const closed = state.closed.filter(t => inRange(t.modified || t.created, bounds));
+      const onsite = state.open.filter(t => t.status === 'Onsite Scheduled' && inRange(t.onsite, bounds));
       const avg = averageClosureTime(closed);
-
       els.perfOpened.textContent = opened.length.toLocaleString();
       els.perfClosed.textContent = closed.length.toLocaleString();
-      els.perfCloseRate.textContent = opened.length
-        ? `${Math.round((closed.length / opened.length) * 100)}%`
-        : '0%';
-
+      els.perfOnsite.textContent = onsite.length.toLocaleString();
       els.perfAvgResolution.textContent = avg.text;
-      els.perfAvgResolutionNote.textContent = avg.count
-        ? `Based on ${avg.count.toLocaleString()} closed tickets`
-        : 'No closed tickets in period';
+      els.perfAvgResolutionNote.textContent = avg.count ? `Based on ${avg.count.toLocaleString()} closed tickets` : 'Closed view needs Created field';
+    }
+
+    function buildOnsiteGroups(tickets) {
+      const groups = new Map();
+
+      tickets.forEach(ticket => {
+        const scheduleKey = ticket.onsite || "Not scheduled";
+        const key = `${ticket.store}||${scheduleKey}`;
+
+        if (!groups.has(key)) {
+          groups.set(key, {
+            store: ticket.store,
+            onsite: ticket.onsite,
+            tickets: []
+          });
+        }
+
+        groups.get(key).tickets.push(ticket);
+      });
+
+      return [...groups.values()].sort((a, b) => {
+        const ad = new Date(a.onsite || 0).getTime();
+        const bd = new Date(b.onsite || 0).getTime();
+        return ad - bd || a.store.localeCompare(b.store);
+      });
+    }
+
+    function renderUpcomingOnsite() {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      const onsiteTickets = state.open.filter(t => t.status === 'Onsite Scheduled');
+
+      // Keep same-day visits in Upcoming all day.
+      // Only move to Overdue starting the next day.
+      const upcomingTickets = onsiteTickets.filter(t => {
+        if (!t.onsite) return true;
+        const visitDate = new Date(t.onsite);
+        if (Number.isNaN(visitDate.getTime())) return true;
+        return visitDate >= todayStart;
+      });
+
+      const overdueTickets = onsiteTickets.filter(t => {
+        if (!t.onsite) return false;
+        const visitDate = new Date(t.onsite);
+        if (Number.isNaN(visitDate.getTime())) return false;
+        return visitDate < todayStart;
+      });
+
+      state.upcomingOnsiteGroups = buildOnsiteGroups(upcomingTickets);
+      state.overdueOnsiteGroups = buildOnsiteGroups(overdueTickets);
+
+      els.upcomingOnsiteLabel.textContent = `${state.upcomingOnsiteGroups.length.toLocaleString()} visit${state.upcomingOnsiteGroups.length === 1 ? '' : 's'}`;
+      els.overdueOnsiteLabel.textContent = `${state.overdueOnsiteGroups.length.toLocaleString()} overdue visit${state.overdueOnsiteGroups.length === 1 ? '' : 's'}`;
+
+      els.upcomingOnsite.innerHTML = onsiteGroupTableMarkup(state.upcomingOnsiteGroups, false);
+      els.overdueOnsite.innerHTML = onsiteGroupTableMarkup(state.overdueOnsiteGroups, true);
+    }
+
+    function onsiteGroupTableMarkup(groups, showDaysOverdue = false) {
+      if (!groups.length) {
+        return '<div class="p-4 text-sm text-slate-400">No onsite visits found.</div>';
+      }
+
+      const columns = showDaysOverdue
+        ? ['store', 'onsite', 'count', 'overdue']
+        : ['store', 'onsite', 'visitStatus', 'count'];
+
+      const headers = {
+        store: 'Store',
+        onsite: 'Onsite',
+        visitStatus: 'Status',
+        count: 'Issues',
+        overdue: 'Overdue'
+      };
+
+      const columnClasses = {
+        store: 'w-[38%]',
+        onsite: 'w-[28%] whitespace-nowrap',
+        visitStatus: 'w-[16%] whitespace-nowrap',
+        count: 'w-[18%] whitespace-nowrap',
+        overdue: 'w-[18%] whitespace-nowrap'
+      };
+
+      const rows = groups.map((group, index) => {
+        const inProgress = !showDaysOverdue && getVisitStatus(group) === 'In Progress';
+        return `
+          <tr class="table-row cursor-pointer border-t border-slate-700/60 ${inProgress ? 'visit-in-progress' : ''}" data-onsite-group="${index}" data-overdue="${showDaysOverdue ? '1' : '0'}">
+            ${columns.map(col => `<td class="px-2.5 py-3 align-middle text-sm text-slate-300 ${columnClasses[col] || ''}">${onsiteGroupCell(group, col)}</td>`).join('')}
+          </tr>
+        `;
+      }).join('');
+
+      return `
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left">
+            <thead class="bg-slate-900/80 text-xs uppercase tracking-wide text-slate-500">
+              <tr>${columns.map(col => `<th class="px-2.5 py-3 font-bold ${columnClasses[col] || ''}">${headers[col]}</th>`).join('')}</tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function formatOnsiteShortDate(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function getVisitStatus(group) {
+      if (!group.onsite) return 'Scheduled';
+
+      const now = new Date();
+      const start = new Date(group.onsite);
+      if (Number.isNaN(start.getTime())) return 'Scheduled';
+
+      const end = new Date(start.getTime() + (2 * 60 * 60 * 1000));
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+      if (start < todayStart) return 'Overdue';
+      if (now >= start && now <= end) return 'In Progress';
+      if (start >= todayStart && start < tomorrowStart && now > end) return 'Today';
+      return 'Scheduled';
+    }
+
+    function onsiteGroupCell(group, col) {
+      if (col === 'store') return `<span class="font-semibold text-sky-100">${escapeHtml(group.store)}</span>`;
+      if (col === 'onsite') return `<span class="whitespace-nowrap">${escapeHtml(formatOnsiteShortDate(group.onsite) || 'Not scheduled')}</span>`;
+      if (col === 'visitStatus') {
+        const status = getVisitStatus(group);
+        if (status === 'In Progress') return '<span class="whitespace-nowrap rounded-full border border-green-400/40 bg-green-950/50 px-2 py-1 text-xs font-semibold text-green-200">In Progress</span>';
+        if (status === 'Today') return '<span class="whitespace-nowrap rounded-full border border-sky-400/30 bg-sky-950/40 px-2 py-1 text-xs text-sky-200">Today</span>';
+        return `<span class="pill whitespace-nowrap rounded-full px-2 py-1 text-xs">${escapeHtml(status)}</span>`;
+      }
+      if (col === 'count') return `<span class="pill whitespace-nowrap rounded-full px-2 py-1 text-xs">${group.tickets.length.toLocaleString()} ticket${group.tickets.length === 1 ? '' : 's'}</span>`;
+      if (col === 'overdue') {
+        if (!group.onsite) return 'No date';
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const visitDate = new Date(group.onsite);
+        visitDate.setHours(0, 0, 0, 0);
+        const days = Math.max(1, Math.floor((todayStart - visitDate) / 86400000));
+        return `${days.toLocaleString()} day${days === 1 ? '' : 's'}`;
+      }
+      return '';
     }
 
     function renderFilteredSections() {
       renderBreakdown(els.storeBreakdown, countBy(state.filtered, 'store'), 'store');
       renderBreakdown(els.patchBreakdown, countBy(state.filtered, 'patch'), 'patch');
     }
-
     function renderBreakdown(container, counts, type) {
-      const entries = sortedEntries(counts);
-      const max = Math.max(...entries.map(e => e[1]), 1);
-
-      container.innerHTML = entries.length
-        ? entries.map(([label, count]) => `
-          <button
-            class="w-full rounded-2xl p-2 text-left transition hover:bg-slate-800/70 focus:outline-none focus:ring-2 focus:ring-sky-500/70"
-            data-breakdown-type="${escapeHtml(type)}"
-            data-breakdown-label="${escapeHtml(label)}"
-          >
-            <div class="mb-1 flex items-center justify-between gap-3 text-sm">
-              <span class="truncate text-slate-200">${escapeHtml(label)}</span>
-              <span class="font-bold text-slate-100">${count.toLocaleString()}</span>
-            </div>
-            <div class="bar-bg h-2 overflow-hidden rounded-full">
-              <div class="bar h-full rounded-full" style="width:${(count / max) * 100}%"></div>
-            </div>
-          </button>
-        `).join('')
-        : '<div class="text-sm text-slate-400">No results match the current filters.</div>';
+      const entries = sortedEntries(counts), max = Math.max(...entries.map(e => e[1]), 1), clickHint = type === 'store' ? 'View tickets for this store' : 'View tickets for this patch';
+      container.innerHTML = entries.length ? entries.map(([label, count]) => `<button class="w-full rounded-2xl p-2 text-left transition hover:bg-slate-800/70 focus:outline-none focus:ring-2 focus:ring-sky-500/70" data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}" title="${clickHint}"><div class="mb-1 flex items-center justify-between gap-3 text-sm"><span class="truncate text-slate-200">${escapeHtml(label)}</span><span class="font-bold text-slate-100">${count.toLocaleString()}</span></div><div class="bar-bg h-2 overflow-hidden rounded-full"><div class="bar h-full rounded-full" style="width:${(count / max) * 100}%"></div></div></button>`).join('') : '<div class="text-sm text-slate-400">No results match the current filters.</div>';
     }
 
-    function sortTicketsForModal(tickets) {
-      return tickets.sort((a, b) => {
-        const aOpen = a.source === 'open';
-        const bOpen = b.source === 'open';
-
-        if (aOpen && !bOpen) return -1;
-        if (!aOpen && bOpen) return 1;
-        if (aOpen && bOpen) return new Date(a.created || 0) - new Date(b.created || 0);
-
-        return new Date(b.modified || b.created || 0) - new Date(a.modified || a.created || 0);
-      });
+    function tableMarkup(items, options) {
+      const limit = options.limit || 50, columns = options.columns, clickableTickets = options.clickableTickets || false;
+      if (!items.length) return '<div class="p-4 text-sm text-slate-400">No tickets found.</div>';
+      const headers = { ticket: 'Ticket', store: 'Store', reporter: 'Reporter', patch: 'Patch', status: 'Status', category: 'Category', age: 'Age / Closed', onsite: 'Onsite Schedule' };
+      const rows = items.slice(0, limit).map(ticket => `<tr class="table-row border-t border-slate-700/60">${columns.map(col => `<td class="px-3 py-3 align-top text-sm ${col === 'ticket' ? 'font-bold text-sky-200' : 'text-slate-300'}">${cellValue(ticket, col, clickableTickets)}</td>`).join('')}</tr>`).join('');
+      const extra = items.length > limit ? `<div class="border-t border-slate-700/60 p-3 text-center text-xs text-slate-500">Showing first ${limit.toLocaleString()} results. Use filters/search to narrow the list.</div>` : '';
+      return `<div class="overflow-x-auto"><table class="min-w-full text-left"><thead class="bg-slate-900/80 text-xs uppercase tracking-wide text-slate-500"><tr>${columns.map(col => `<th class="px-3 py-3 font-bold">${headers[col]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>${extra}`;
     }
-
-    function cellValue(ticket, col) {
+    function cellValue(ticket, col, clickableTickets = false) {
       if (col === 'ticket') {
-        return `
-          <button class="text-left font-bold text-sky-200 underline-offset-4 hover:underline" data-ticket-detail="${escapeHtml(String(ticket.ticketNumber))}">
-            #${escapeHtml(String(ticket.ticketNumber))}
-            <div class="mt-1 text-xs font-normal text-slate-500">${escapeHtml(ticket.source.toUpperCase())}${ticket.hasAttachment ? ' · Attachment' : ''}</div>
-          </button>
-        `;
+        const label = `#${escapeHtml(String(ticket.ticketNumber))}`, meta = `<div class="mt-1 text-xs font-normal text-slate-500">${escapeHtml(ticket.source.toUpperCase())}${ticket.hasAttachment ? ' · Attachment' : ''}</div>`;
+        return clickableTickets ? `<button class="text-left font-bold text-sky-200 underline-offset-4 hover:underline" data-ticket-detail="${escapeHtml(String(ticket.ticketNumber))}">${label}${meta}</button>` : `${label}${meta}`;
       }
-
       if (col === 'store') return escapeHtml(ticket.store);
       if (col === 'reporter') return escapeHtml(ticket.reporter || 'Unknown');
       if (col === 'patch') return escapeHtml(ticket.patch);
       if (col === 'status') return `<span class="pill rounded-full px-2 py-1 text-xs">${escapeHtml(ticket.status)}</span>`;
-      if (col === 'device') return escapeHtml(ticket.device);
-      if (col === 'ticketType') return escapeHtml(ticket.ticketType);
+      if (col === 'category') return escapeHtml(ticket.category);
       if (col === 'age') return ticket.source === 'open' ? escapeHtml(formatAge(ticket.created)) : escapeHtml(formatDate(ticket.modified));
+      if (col === 'onsite') return escapeHtml(formatDate(ticket.onsite) || 'Not scheduled');
       return '';
     }
 
-    function tableMarkup(items, columns) {
-      if (!items.length) {
-        return '<div class="p-4 text-sm text-slate-400">No tickets found.</div>';
-      }
-
-      const headers = {
-        ticket: 'Ticket',
-        store: 'Store',
-        reporter: 'Reporter',
-        patch: 'Patch',
-        status: 'Status',
-        device: 'Device',
-        ticketType: 'Type',
-        age: 'Age / Closed'
-      };
-
-      const rows = items.slice(0, 500).map(ticket => `
-        <tr class="table-row border-t border-slate-700/60">
-          ${columns.map(col => `<td class="px-3 py-3 align-top text-sm ${col === 'ticket' ? 'font-bold text-sky-200' : 'text-slate-300'}">${cellValue(ticket, col)}</td>`).join('')}
-        </tr>
-      `).join('');
-
-      const extra = items.length > 500
-        ? `<div class="border-t border-slate-700/60 p-3 text-center text-xs text-slate-500">Showing first 500 results. Use filters/search to narrow the list.</div>`
-        : '';
-
-      return `
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-left">
-            <thead class="bg-slate-900/80 text-xs uppercase tracking-wide text-slate-500">
-              <tr>${columns.map(col => `<th class="px-3 py-3 font-bold">${headers[col]}</th>`).join('')}</tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-        ${extra}
-      `;
+    function sortTicketsForModal(tickets) {
+      return tickets.sort((a, b) => {
+        const aOpen = a.source === 'open', bOpen = b.source === 'open';
+        if (aOpen && !bOpen) return -1;
+        if (!aOpen && bOpen) return 1;
+        if (aOpen && bOpen) return new Date(a.created || 0) - new Date(b.created || 0);
+        return new Date(b.modified || b.created || 0) - new Date(a.modified || a.created || 0);
+      });
     }
-
     function quickBreakdown(type, label) {
-      const tickets = sortTicketsForModal(
-        state.filtered.filter(t => type === 'store' ? t.store === label : t.patch === label)
-      );
-
-      els.modalTitle.textContent = `${type === 'store' ? 'Store' : 'Patch'}: ${label}`;
-      els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} ticket${tickets.length === 1 ? '' : 's'} based on current filters.`;
-
-      const columns = type === 'store'
-        ? ['ticket', 'reporter', 'status', 'device', 'ticketType', 'age']
-        : ['ticket', 'store', 'reporter', 'status', 'device', 'ticketType', 'age'];
-
-      els.modalTicketList.innerHTML = tableMarkup(tickets, columns);
-      els.ticketModal.classList.remove('hidden');
-      els.ticketModal.classList.add('flex');
+      const tickets = sortTicketsForModal(state.filtered.filter(t => type === 'store' ? t.store === label : t.patch === label));
+      const modalColumns = type === 'store' ? ['ticket', 'reporter', 'status', 'category', 'age'] : ['ticket', 'store', 'reporter', 'status', 'category', 'age'];
+      const titleType = type === 'store' ? 'Store' : 'Supervisor Patch';
+      els.modalTitle.textContent = `${titleType}: ${label}`;
+      els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} ticket${tickets.length === 1 ? '' : 's'} based on the current filter view.`;
+      els.modalTicketList.innerHTML = tableMarkup(tickets, { limit: 500, columns: modalColumns, clickableTickets: true });
+      els.ticketModal.classList.remove('hidden'); els.ticketModal.classList.add('flex');
     }
-
     function showTicketDetails(ticketNumber) {
       const ticket = state.all.find(t => String(t.ticketNumber) === String(ticketNumber));
       if (!ticket) return;
-
-      const existing = els.modalTicketList.querySelector('[data-ticket-detail-card]');
-      if (existing) existing.remove();
-
-      const detailHtml = `
-        <div data-ticket-detail-card class="mb-4 rounded-2xl border border-slate-700/60 bg-slate-950/70 p-4">
-          <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <h3 class="text-xl font-black text-sky-200">Ticket #${escapeHtml(String(ticket.ticketNumber))}</h3>
-              <p class="mt-1 text-sm text-slate-400">${escapeHtml(ticket.store)} · ${escapeHtml(ticket.status)}</p>
-            </div>
-            <span class="pill w-fit rounded-full px-3 py-1 text-xs text-slate-300">${escapeHtml(ticket.source.toUpperCase())}</span>
-          </div>
-
-          <div class="grid gap-3 md:grid-cols-2">
-            <div>
-              <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Reporter</p>
-              <p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.reporter || 'Unknown')}</p>
-            </div>
-
-            <div>
-              <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Device</p>
-              <p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.device)}</p>
-            </div>
-
-            <div>
-              <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Ticket Type</p>
-              <p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.ticketType)}</p>
-            </div>
-
-            <div>
-              <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Created</p>
-              <p class="mt-1 text-sm text-slate-200">${escapeHtml(formatDate(ticket.created) || 'Not available')}</p>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Issue Description</p>
-            <p class="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">${escapeHtml(ticket.issue || 'No issue description entered.')}</p>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Notes</p>
-            <p class="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">${escapeHtml(ticket.notes || 'No notes entered.')}</p>
-          </div>
-        </div>
-      `;
-
+      const existing = els.modalTicketList.querySelector('[data-ticket-detail-card]'); if (existing) existing.remove();
+      const detailHtml = `<div data-ticket-detail-card class="mb-4 rounded-2xl border border-slate-700/60 bg-slate-950/70 p-4"><div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"><div><h3 class="text-xl font-black text-sky-200">Ticket #${escapeHtml(String(ticket.ticketNumber))}</h3><p class="mt-1 text-sm text-slate-400">${escapeHtml(ticket.store)} · ${escapeHtml(ticket.status)}</p></div><span class="pill w-fit rounded-full px-3 py-1 text-xs text-slate-300">${escapeHtml(ticket.source.toUpperCase())}</span></div><div class="grid gap-3 md:grid-cols-2"><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Reporter</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.reporter || 'Unknown')}</p></div><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Category</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.category)}</p></div><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Created</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(formatDate(ticket.created) || 'Not available')}</p></div><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Onsite Scheduled</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(formatDate(ticket.onsite) || 'Not scheduled')}</p></div></div><div class="mt-4"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Issue Description</p><p class="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">${escapeHtml(ticket.issue || 'No issue description entered.')}</p></div><div class="mt-4"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Notes</p><p class="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">${escapeHtml(ticket.notes || 'No notes entered.')}</p></div></div>`;
       els.modalTicketList.insertAdjacentHTML('afterbegin', detailHtml);
       els.modalTicketList.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function handleBreakdownClick(event) {
-      const btn = event.target.closest('[data-breakdown-type]');
-      if (btn) quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel);
+    function handleOnsiteGroupClick(event, overdue) {
+      const row = event.target.closest('[data-onsite-group]');
+      if (!row) return;
+
+      const groupIndex = Number(row.dataset.onsiteGroup);
+      const groups = overdue ? state.overdueOnsiteGroups : state.upcomingOnsiteGroups;
+      const group = groups?.[groupIndex];
+      if (!group) return;
+
+      els.modalTitle.textContent = `${overdue ? 'Overdue' : 'Upcoming'} Onsite Visit`;
+      els.modalSubtitle.textContent = `${group.store} · ${formatDate(group.onsite) || 'Not scheduled'} · ${group.tickets.length.toLocaleString()} ticket${group.tickets.length === 1 ? '' : 's'}`;
+
+      const sortedTickets = [...group.tickets].sort((a, b) => new Date(a.created || 0) - new Date(b.created || 0));
+      els.modalTicketList.innerHTML = tableMarkup(sortedTickets, {
+        limit: 500,
+        columns: ['ticket', 'reporter', 'status', 'category', 'age'],
+        clickableTickets: true
+      });
+
+      els.ticketModal.classList.remove('hidden');
+      els.ticketModal.classList.add('flex');
     }
 
-    function handleTicketDetailClick(event) {
-      const btn = event.target.closest('[data-ticket-detail]');
-      if (btn) showTicketDetails(btn.dataset.ticketDetail);
+    function handleBreakdownClick(event) { const btn = event.target.closest('[data-breakdown-type]'); if (btn) quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel); }
+    function handleTicketDetailClick(event) { const btn = event.target.closest('[data-ticket-detail]'); if (btn) showTicketDetails(btn.dataset.ticketDetail); }
+    function closeTicketModal() { els.ticketModal.classList.add('hidden'); els.ticketModal.classList.remove('flex'); }
+    function showError(message) { els.errorBox.textContent = message; els.errorBox.classList.remove('hidden'); }
+    function hideError() { els.errorBox.classList.add('hidden'); els.errorBox.textContent = ''; }
+
+    function applyBranding() {
+      document.title = CONFIG.dashboardTitle || 'Technology Ticket Dashboard';
+      const orgEl = document.getElementById('organizationName');
+      const titleEl = document.getElementById('dashboardTitle');
+      if (orgEl) orgEl.textContent = CONFIG.organizationName || 'Organization Name';
+      if (titleEl) titleEl.textContent = CONFIG.dashboardTitle || 'Technology Ticket Dashboard';
     }
 
-    function closeTicketModal() {
-      els.ticketModal.classList.add('hidden');
-      els.ticketModal.classList.remove('flex');
-    }
-
-    function showError(message) {
-      els.errorBox.textContent = message;
-      els.errorBox.classList.remove('hidden');
-    }
-
-    function hideError() {
-      els.errorBox.classList.add('hidden');
-      els.errorBox.textContent = '';
+    function validateConfig() {
+      if (!CONFIG.apiUrl) {
+        throw new Error('Dashboard setup incomplete. Missing apiUrl.');
+      }
     }
 
     async function loadDashboard() {
@@ -802,13 +649,15 @@
       els.refreshBtn.textContent = 'Refreshing...';
 
       try {
+        validateConfig();
+
         const response = await fetch(CONFIG.apiUrl);
-        if (!response.ok) throw new Error(`Dashboard API failed: ${response.status}`);
+        if (!response.ok) throw new Error(`Dashboard API failed (${response.status})`);
 
         const data = await response.json();
         const records = data.records || [];
 
-        state.all = records.map(record => normalizeRecord(record));
+        state.all = records.map(r => normalizeRecord(r));
         state.open = state.all.filter(t => t.source === 'open');
         state.closed = state.all.filter(t => t.source === 'closed');
 
@@ -824,73 +673,29 @@
         });
       } catch (error) {
         console.error(error);
-        showError(`${error.message}. Check /api/ticket-dashboard.`);
+        showError(`${error.message}. Check /api/ticket-dashboard and make sure it returns a records array.`);
       } finally {
         els.refreshBtn.disabled = false;
         els.refreshBtn.textContent = 'Refresh';
       }
     }
 
-    [
-      els.setFilter,
-      els.statusFilter,
-      els.storeFilter,
-      els.patchFilter,
-      els.deviceFilter,
-      els.ticketTypeFilter,
-      els.startDateFilter,
-      els.endDateFilter
-    ].forEach(el => el.addEventListener('change', applyFilters));
-
-    els.dateRangeFilter.addEventListener('change', () => {
-      const custom = els.dateRangeFilter.value === 'custom';
-      els.startDateFilter.disabled = !custom;
-      els.endDateFilter.disabled = !custom;
-      applyFilters();
-    });
-
-    [
-      els.performancePeriodFilter,
-      els.performanceStartDate,
-      els.performanceEndDate
-    ].forEach(el => el.addEventListener('change', () => {
-      const custom = els.performancePeriodFilter.value === 'custom';
-      els.performanceStartDate.disabled = !custom;
-      els.performanceEndDate.disabled = !custom;
-      renderPerformanceMetrics();
-    }));
-
+    [els.setFilter, els.statusFilter, els.storeFilter, els.patchFilter, els.categoryFilter, els.onsiteFilter, els.startDateFilter, els.endDateFilter].forEach(el => el.addEventListener('change', applyFilters));
+    els.dateRangeFilter.addEventListener('change', () => { const custom = els.dateRangeFilter.value === 'custom'; els.startDateFilter.disabled = !custom; els.endDateFilter.disabled = !custom; applyFilters(); });
+    [els.performancePeriodFilter, els.performanceStartDate, els.performanceEndDate].forEach(el => el.addEventListener('change', () => { const custom = els.performancePeriodFilter.value === 'custom'; els.performanceStartDate.disabled = !custom; els.performanceEndDate.disabled = !custom; renderPerformanceMetrics(); }));
     els.searchInput.addEventListener('input', applyFilters);
     els.refreshBtn.addEventListener('click', loadDashboard);
     els.storeBreakdown.addEventListener('click', handleBreakdownClick);
     els.patchBreakdown.addEventListener('click', handleBreakdownClick);
+    els.upcomingOnsite.addEventListener('click', event => handleOnsiteGroupClick(event, false));
+    els.overdueOnsite.addEventListener('click', event => handleOnsiteGroupClick(event, true));
     els.modalTicketList.addEventListener('click', handleTicketDetailClick);
     els.closeModal.addEventListener('click', closeTicketModal);
+    els.ticketModal.addEventListener('click', event => { if (event.target === els.ticketModal) closeTicketModal(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeTicketModal(); });
+    els.clearFilters.addEventListener('click', () => { els.setFilter.value = 'open'; els.statusFilter.value = 'all'; els.storeFilter.value = 'all'; els.patchFilter.value = 'all'; els.categoryFilter.value = 'all'; els.onsiteFilter.value = 'all'; els.dateRangeFilter.value = 'all'; els.startDateFilter.value = ''; els.endDateFilter.value = ''; els.startDateFilter.disabled = true; els.endDateFilter.disabled = true; els.searchInput.value = ''; applyFilters(); });
 
-    els.ticketModal.addEventListener('click', event => {
-      if (event.target === els.ticketModal) closeTicketModal();
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeTicketModal();
-    });
-
-    els.clearFilters.addEventListener('click', () => {
-      els.setFilter.value = 'open';
-      els.statusFilter.value = 'all';
-      els.storeFilter.value = 'all';
-      els.patchFilter.value = 'all';
-      els.deviceFilter.value = 'all';
-      els.ticketTypeFilter.value = 'all';
-      els.dateRangeFilter.value = 'all';
-      els.startDateFilter.value = '';
-      els.endDateFilter.value = '';
-      els.startDateFilter.disabled = true;
-      els.endDateFilter.disabled = true;
-      els.searchInput.value = '';
-      applyFilters();
-    });
-
+    applyBranding();
     loadDashboard();
     setInterval(loadDashboard, CONFIG.refreshMinutes * 60 * 1000);
   </script>
