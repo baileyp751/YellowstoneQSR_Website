@@ -233,10 +233,13 @@
     #otpBreakdown {
       max-height: 650px;
       overflow-y: auto;
+      overflow-x: hidden;
       padding-right: 8px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
+      width: 100%;
+      max-width: 100%;
     }
 
     .breakdown-card-head {
@@ -891,28 +894,55 @@
               data-breakdown-type="${escapeHtml(type)}"
               data-breakdown-label="${escapeHtml(label)}"
               style="
-                display:block;
                 width:100%;
-                padding:12px 14px;
-                border-radius:14px;
+                max-width:100%;
+                padding:10px 0;
                 cursor:pointer;
-                text-align:left;
                 color:inherit;
-                background:rgba(15,23,42,.35);
-                border:1px solid rgba(148,163,184,.08);
-                transition:.15s ease;
+                overflow:hidden;
               "
             >
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:14px;">
-                <span style="color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">
-                  ${escapeHtml(label)}
-                </span>
-                <span style="color:#f8fafc;font-weight:900;width:50px;text-align:right;flex-shrink:0;">
-                  ${count.toLocaleString()}
-                </span>
+              <div style="
+                display:grid;
+                grid-template-columns:minmax(0,1fr) 56px;
+                align-items:center;
+                gap:10px;
+                margin-bottom:6px;
+                font-size:14px;
+                width:100%;
+                max-width:100%;
+              ">
+                <span style="
+                  color:#e2e8f0;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                  white-space:nowrap;
+                  min-width:0;
+                ">${escapeHtml(label)}</span>
+
+                <span style="
+                  color:#f8fafc;
+                  font-weight:900;
+                  text-align:right;
+                  overflow:visible;
+                ">${count.toLocaleString()}</span>
               </div>
-              <div class="breakdown-track">
-                <div class="breakdown-fill" style="width:${width}%"></div>
+
+              <div style="
+                height:8px;
+                width:100%;
+                max-width:100%;
+                border-radius:999px;
+                overflow:hidden;
+                background:rgba(51,65,85,0.82);
+              ">
+                <div style="
+                  height:100%;
+                  width:${width}%;
+                  border-radius:999px;
+                  background:linear-gradient(90deg,#38bdf8 0%,#60a5fa 55%,#818cf8 100%);
+                  box-shadow:0 0 10px rgba(56,189,248,0.22);
+                "></div>
               </div>
             </div>
           `;
