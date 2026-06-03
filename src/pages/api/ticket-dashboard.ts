@@ -1,7 +1,7 @@
 export const prerender = false;
 
 const NOCODB_URL =
-  "https://nocodb.yellowstoneqsr.org/api/v3/data/px1ga5r695yvn0t/m70l1rghxqp836u/records?pageSize=1000";
+  "https://nocodb.yellowstoneqsr.org/api/v3/data/px1ga5r695yvn0t/m70l1rghxqp836u/records?pageSize=2000";
 
 type Ticket = {
   fields?: Record<string, any>;
