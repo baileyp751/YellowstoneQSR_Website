@@ -9,154 +9,54 @@
   <title>Technology Ticket Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-  :root {
-    color-scheme: dark;
-    --bg: #020617;
-    --panel: rgba(15, 23, 42, 0.88);
-    --panel-2: rgba(30, 41, 59, 0.72);
-    --border: rgba(148, 163, 184, 0.18);
-    --text: #f8fafc;
-    --muted: #93a4bd;
-    --blue: #38bdf8;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
+  :root { color-scheme: dark; }
 
   body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 34rem),
-      radial-gradient(circle at top right, rgba(129, 140, 248, 0.08), transparent 30rem),
-      var(--bg);
-    color: var(--text);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #020617;
   }
 
-  .dashboard {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 32px;
+  .card {
+    background: rgba(15, 23, 42, .82);
+    border: 1px solid rgba(148, 163, 184, .18);
+    box-shadow: 0 18px 50px rgba(0,0,0,.24);
   }
 
-  h1 {
-    margin: 0 0 26px;
-    font-size: clamp(34px, 4vw, 52px);
-    line-height: 1;
-    letter-spacing: -0.045em;
-    font-weight: 900;
-    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+  .soft {
+    background: rgba(30, 41, 59, .62);
+    border: 1px solid rgba(148, 163, 184, .14);
   }
 
-  #range {
-    margin: 0 0 22px;
-    min-width: 180px;
-    padding: 12px 42px 12px 14px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: rgba(2, 6, 23, 0.72);
-    color: var(--text);
-    font-weight: 700;
-    outline: none;
+  .pill {
+    border: 1px solid rgba(148, 163, 184, .22);
+    background: rgba(15, 23, 42, .72);
   }
 
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(190px, 1fr));
-    gap: 18px;
-    margin-bottom: 24px;
+  .table-row:hover {
+    background: rgba(51, 65, 85, .48);
   }
 
-  .cards div {
-    min-height: 134px;
-    padding: 26px 22px;
-    border-radius: 24px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 18px 50px rgba(0,0,0,.2);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  .bar-bg {
+    background: rgba(51, 65, 85, .75);
   }
 
-  .cards span {
-    display: block;
-    color: #9ec5f8;
-    font-size: 15px;
-    margin-bottom: 12px;
+  .bar {
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
   }
 
-  .cards strong {
-    display: block;
-    font-size: clamp(34px, 4vw, 46px);
-    line-height: 1;
-    font-weight: 950;
-    letter-spacing: -0.04em;
-    color: white;
-    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.38);
-  }
-
-  section.cards:first-of-type::before {
-    content: "Organization Overview";
-    grid-column: 1 / -1;
-    font-size: 22px;
-    font-weight: 900;
-    margin-bottom: -2px;
-  }
-
-  section.cards:first-of-type {
-    padding: 22px;
-    border-radius: 28px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-  }
-
-  section.cards:nth-of-type(2)::before {
-    content: "Performance Metrics";
-    grid-column: 1 / -1;
-    font-size: 22px;
-    font-weight: 900;
-    margin-bottom: -2px;
-  }
-
-  section.cards:nth-of-type(2) {
-    padding: 22px;
-    border-radius: 28px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    grid-template-columns: repeat(3, minmax(190px, 1fr));
-  }
-
-  @media (max-width: 900px) {
-    .dashboard {
-      padding: 20px;
+  @keyframes pulseGreen {
+    0%, 100% {
+      box-shadow: inset 0 0 0 1px rgba(34,197,94,.35), 0 0 0 rgba(34,197,94,0);
     }
-
-    .cards,
-    section.cards:nth-of-type(2) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    50% {
+      box-shadow: inset 0 0 0 1px rgba(34,197,94,.85), 0 0 18px rgba(34,197,94,.18);
     }
   }
 
-  @media (max-width: 560px) {
-    .cards,
-    section.cards:nth-of-type(2) {
-      grid-template-columns: 1fr;
-    }
-
-    h1 {
-      font-size: 34px;
-    }
-body {
-  background: red !important;
-}
+  .visit-in-progress {
+    background: rgba(20, 83, 45, .16);
+    animation: pulseGreen 2.4s ease-in-out infinite;
   }
 </style>
-    .visit-in-progress { background: rgba(20, 83, 45, .16); animation: pulseGreen 2.4s ease-in-out infinite; }
-  </style>
 </head>
 <body class="min-h-screen text-slate-100">
   <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
