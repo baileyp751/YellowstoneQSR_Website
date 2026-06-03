@@ -11,20 +11,15 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #020617;
       --panel: rgba(15, 23, 42, 0.84);
       --soft: rgba(30, 41, 59, 0.68);
       --border: rgba(148, 163, 184, 0.18);
       --text: #f8fafc;
       --muted: #94a3b8;
       --muted2: #64748b;
-      --sky: #38bdf8;
-      --indigo: #818cf8;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -51,16 +46,8 @@
       margin-bottom: 26px;
     }
 
-    header > div:first-child {
-      max-width: 920px;
-    }
-
-    header > div:last-child {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    header > div:first-child { max-width: 920px; }
+    header > div:last-child { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
     #organizationName {
       margin: 0;
@@ -80,9 +67,7 @@
       color: #fff;
     }
 
-    p {
-      color: var(--muted);
-    }
+    p { color: var(--muted); }
 
     .help-box {
       margin-top: 16px;
@@ -93,17 +78,8 @@
       color: #cbd5e1;
     }
 
-    .help-box ul {
-      margin: 8px 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .help-box li {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .help-box ul { margin: 8px 0 0; padding: 0; list-style: none; }
+    .help-box li { margin-top: 5px; color: var(--muted); font-size: 14px; }
 
     .card,
     .last-updated,
@@ -139,10 +115,7 @@
       border-radius: 999px;
     }
 
-    button {
-      cursor: pointer;
-      font: inherit;
-    }
+    button { cursor: pointer; font: inherit; }
 
     #refreshBtn {
       border: 0;
@@ -155,9 +128,7 @@
       box-shadow: 0 16px 40px rgba(2, 132, 199, 0.20);
     }
 
-    #refreshBtn:hover {
-      background: #7dd3fc;
-    }
+    #refreshBtn:hover { background: #7dd3fc; }
 
     .last-updated {
       border-radius: 18px;
@@ -183,17 +154,9 @@
       margin-bottom: 24px;
     }
 
-    #errorBox:not(.hidden) {
-      display: block;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .flex {
-      display: flex !important;
-    }
+    #errorBox:not(.hidden) { display: block; }
+    .hidden { display: none !important; }
+    .flex { display: flex !important; }
 
     .section-head {
       display: flex;
@@ -211,25 +174,11 @@
       letter-spacing: -0.02em;
     }
 
-    .grid {
-      display: grid;
-    }
+    .grid { display: grid; }
+    .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .breakdown-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 
-    .metric-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .breakdown-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-    }
-
-    .metric-label {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .metric-label { margin: 0; color: var(--muted); font-size: 14px; }
 
     .metric-value {
       margin-top: 8px;
@@ -239,16 +188,8 @@
       line-height: 1;
     }
 
-    .metric-note {
-      margin: 8px 0 0;
-      color: var(--muted2);
-      font-size: 12px;
-    }
-
-    #perfAvgResolution,
-    #oldestOpen {
-      font-size: clamp(28px, 3vw, 38px);
-    }
+    .metric-note { margin: 8px 0 0; color: var(--muted2); font-size: 12px; }
+    #perfAvgResolution, #oldestOpen { font-size: clamp(28px, 3vw, 38px); }
 
     select,
     input {
@@ -268,9 +209,7 @@
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
 
-    input:disabled {
-      opacity: 0.45;
-    }
+    input:disabled { opacity: 0.45; }
 
     label span {
       display: block;
@@ -315,92 +254,17 @@
       white-space: nowrap;
     }
 
-    .breakdown-row {
-      display: block;
-      width: 100%;
-      background: transparent;
-      border: 0;
-      padding: 10px;
-      border-radius: 18px;
-      cursor: pointer;
-      text-align: left;
-      color: inherit;
-    }
-
-    .breakdown-row:hover {
-      background: rgba(30, 41, 59, 0.72);
-    }
-
-    .breakdown-row-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    .breakdown-label {
-      color: #e2e8f0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .breakdown-count {
-      color: #f8fafc;
-      font-weight: 900;
-      flex: 0 0 auto;
-    }
-
-    .breakdown-track {
-      height: 8px;
-      width: 100%;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(51, 65, 85, 0.82);
-    }
-
-    .breakdown-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 55%, #818cf8 100%);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.22);
-    }
-
     .empty-breakdown {
       color: #94a3b8;
       font-size: 14px;
       padding: 12px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    thead {
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--muted2);
-      text-transform: uppercase;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-    }
-
-    th,
-    td {
-      padding: 12px;
-      vertical-align: top;
-      text-align: left;
-    }
-
-    .table-row {
-      border-top: 1px solid var(--border);
-    }
-
-    .table-row:hover {
-      background: rgba(51, 65, 85, 0.48);
-    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: rgba(15, 23, 42, 0.9); color: var(--muted2); text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; }
+    th, td { padding: 12px; vertical-align: top; text-align: left; }
+    .table-row { border-top: 1px solid var(--border); }
+    .table-row:hover { background: rgba(51, 65, 85, 0.48); }
 
     #ticketModal {
       position: fixed;
@@ -414,9 +278,7 @@
       backdrop-filter: blur(5px);
     }
 
-    #ticketModal.flex {
-      display: flex !important;
-    }
+    #ticketModal.flex { display: flex !important; }
 
     #ticketModal > div {
       width: min(100%, 1152px);
@@ -434,22 +296,9 @@
       padding: 20px;
     }
 
-    #modalTitle {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 900;
-    }
-
-    #modalSubtitle {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    #modalTicketList {
-      overflow: auto;
-      padding: 20px;
-    }
+    #modalTitle { margin: 0; font-size: 28px; font-weight: 900; }
+    #modalSubtitle { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    #modalTicketList { overflow: auto; padding: 20px; }
 
     #closeModal {
       border-radius: 12px;
@@ -460,9 +309,7 @@
       font-weight: 800;
     }
 
-    #closeModal:hover {
-      background: rgba(30, 41, 59, 0.7);
-    }
+    #closeModal:hover { background: rgba(30, 41, 59, 0.7); }
 
     .ticket-detail-card {
       margin-bottom: 16px;
@@ -487,19 +334,9 @@
       margin: 0;
     }
 
-    .detail-value {
-      color: #e2e8f0;
-      font-size: 14px;
-      margin: 4px 0 0;
-    }
-
-    .whitespace-pre-wrap {
-      white-space: pre-wrap;
-    }
-
-    .overflow-x-auto {
-      overflow-x: auto;
-    }
+    .detail-value { color: #e2e8f0; font-size: 14px; margin: 4px 0 0; }
+    .whitespace-pre-wrap { white-space: pre-wrap; }
+    .overflow-x-auto { overflow-x: auto; }
 
     .ticket-link {
       background: none;
@@ -511,45 +348,20 @@
     }
 
     @media (max-width: 1180px) {
-      .breakdown-grid {
-        grid-template-columns: 1fr;
-      }
+      .breakdown-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 920px) {
-      .page-wrap {
-        padding: 22px;
-      }
-
-      header {
-        flex-direction: column;
-      }
-
-      .metric-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .period-controls {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        min-width: 0;
-        width: 100%;
-      }
+      .page-wrap { padding: 22px; }
+      header { flex-direction: column; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .period-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; width: 100%; }
     }
 
     @media (max-width: 560px) {
-      .page-wrap {
-        padding: 16px;
-      }
-
-      .metric-grid,
-      .period-controls,
-      .ticket-detail-grid {
-        grid-template-columns: 1fr;
-      }
-
-      #dashboardTitle {
-        font-size: 34px;
-      }
+      .page-wrap { padding: 16px; }
+      .metric-grid, .period-controls, .ticket-detail-grid { grid-template-columns: 1fr; }
+      #dashboardTitle { font-size: 34px; }
     }
   </style>
 </head>
@@ -1044,18 +856,18 @@
 
           return `
             <div
-              class="breakdown-row"
               role="button"
               tabindex="0"
               data-breakdown-type="${escapeHtml(type)}"
               data-breakdown-label="${escapeHtml(label)}"
+              style="display:block;width:100%;background:transparent;border:0;padding:10px;border-radius:18px;cursor:pointer;text-align:left;color:inherit;"
             >
-              <div class="breakdown-row-top">
-                <span class="breakdown-label">${escapeHtml(label)}</span>
-                <span class="breakdown-count">${count.toLocaleString()}</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:14px;">
+                <span style="color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(label)}</span>
+                <span style="color:#f8fafc;font-weight:900;flex:0 0 auto;">${count.toLocaleString()}</span>
               </div>
-              <div class="breakdown-track">
-                <div class="breakdown-fill" style="width:${width}%"></div>
+              <div style="height:8px;width:100%;border-radius:999px;overflow:hidden;background:rgba(51,65,85,0.82);">
+                <div style="height:100%;width:${width}%;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0%,#60a5fa 55%,#818cf8 100%);box-shadow:0 0 10px rgba(56,189,248,0.22);"></div>
               </div>
             </div>
           `;
@@ -1206,6 +1018,7 @@
 
     function handleBreakdownClick(event) {
       const row = event.target.closest('[data-breakdown-type]');
+
       if (row) {
         quickBreakdown(row.dataset.breakdownType, row.dataset.breakdownLabel);
       }
@@ -1215,6 +1028,7 @@
       if (event.key !== 'Enter' && event.key !== ' ') return;
 
       const row = event.target.closest('[data-breakdown-type]');
+
       if (!row) return;
 
       event.preventDefault();
@@ -1223,6 +1037,7 @@
 
     function handleTicketDetailClick(event) {
       const btn = event.target.closest('[data-ticket-detail]');
+
       if (btn) {
         showTicketDetails(btn.dataset.ticketDetail);
       }
