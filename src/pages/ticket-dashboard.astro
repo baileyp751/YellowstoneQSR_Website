@@ -7,7 +7,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Technology Ticket Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     :root {
       color-scheme: dark;
@@ -17,7 +17,9 @@
       --border: rgba(148, 163, 184, 0.18);
       --text: #f8fafc;
       --muted: #94a3b8;
+      --muted2: #64748b;
       --sky: #38bdf8;
+      --indigo: #818cf8;
     }
 
     * { box-sizing: border-box; }
@@ -139,7 +141,7 @@
     }
 
     .last-updated-label {
-      color: #64748b;
+      color: var(--muted2);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -187,7 +189,7 @@
       color: #fff;
       line-height: 1;
     }
-    .metric-note { margin: 8px 0 0; color: #64748b; font-size: 12px; }
+    .metric-note { margin: 8px 0 0; color: var(--muted2); font-size: 12px; }
     #perfAvgResolution, #oldestOpen { font-size: clamp(28px, 3vw, 38px); }
 
     select,
@@ -213,7 +215,7 @@
     label span {
       display: block;
       margin-bottom: 4px;
-      color: #64748b;
+      color: var(--muted2);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -228,7 +230,8 @@
     }
 
     #storeBreakdown,
-    #patchBreakdown {
+    #patchBreakdown,
+    #otpBreakdown {
       max-height: 650px;
       overflow-y: auto;
       padding-right: 8px;
@@ -245,21 +248,30 @@
       margin-bottom: 16px;
     }
 
-    #storeBreakdown button,
-    #patchBreakdown button {
+    .breakdown-card-head .pill {
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .breakdown-row {
       display: block;
       width: 100%;
-      border: 0;
-      background: transparent;
+      border: 0 !important;
+      background: transparent !important;
       color: inherit;
       border-radius: 18px;
       padding: 10px;
       text-align: left;
       transition: background 0.2s ease;
+      appearance: none;
+      -webkit-appearance: none;
     }
 
-    #storeBreakdown button:hover,
-    #patchBreakdown button:hover { background: rgba(30, 41, 59, 0.72); }
+    .breakdown-row:hover {
+      background: rgba(30, 41, 59, 0.72) !important;
+    }
 
     .breakdown-row-top {
       display: flex;
@@ -267,7 +279,7 @@
       justify-content: space-between;
       gap: 12px;
       font-size: 14px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .breakdown-label {
@@ -277,31 +289,30 @@
       white-space: nowrap;
     }
 
-    .breakdown-row {
-  background: transparent !important;
-}
+    .breakdown-count {
+      color: #f8fafc;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
 
-.breakdown-track {
-  height: 8px;
-  width: 100%;
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(51, 65, 85, 0.82) !important;
-}
+    .breakdown-track {
+      height: 8px;
+      width: 100%;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(51, 65, 85, 0.82);
+    }
 
-.breakdown-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 55%, #818cf8 100%) !important;
-}
-
-    .breakdown-count { color: #f8fafc; font-weight: 900; }
-    .bar-bg { height: 8px; overflow: hidden; border-radius: 999px; background: rgba(51, 65, 85, 0.75); }
-    .bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #38bdf8, #818cf8); }
+    .breakdown-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 55%, #818cf8 100%);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.22);
+    }
 
     table { width: 100%; border-collapse: collapse; }
-    thead { background: rgba(15, 23, 42, 0.9); color: #64748b; text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; }
-    th, td { padding: 12px; vertical-align: top; }
+    thead { background: rgba(15, 23, 42, 0.9); color: var(--muted2); text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; }
+    th, td { padding: 12px; vertical-align: top; text-align: left; }
     .table-row { border-top: 1px solid var(--border); }
     .table-row:hover { background: rgba(51, 65, 85, 0.48); }
 
@@ -363,7 +374,7 @@
     }
 
     .detail-label {
-      color: #64748b;
+      color: var(--muted2);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -375,11 +386,14 @@
     .whitespace-pre-wrap { white-space: pre-wrap; }
     .overflow-x-auto { overflow-x: auto; }
 
-    .text-sky-200 { color: #bae6fd; }
-    .text-slate-300 { color: #cbd5e1; }
-    .text-slate-400 { color: #94a3b8; }
-    .text-slate-500 { color: #64748b; }
-    .font-bold { font-weight: 800; }
+    .ticket-link {
+      background: none;
+      border: 0;
+      color: #bae6fd;
+      text-align: left;
+      font-weight: 800;
+      padding: 0;
+    }
 
     @media (max-width: 1180px) {
       .breakdown-grid { grid-template-columns: 1fr; }
@@ -401,6 +415,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="page-wrap">
     <header>
@@ -408,7 +423,7 @@
         <p id="organizationName">Organization Name</p>
         <h1 id="dashboardTitle">Technology Ticket Dashboard</h1>
         <div style="margin-top: 12px;">
-          <p style="max-width: 780px; margin: 0; font-size: 14px;">Live dashboard pulling open and closed ticket views from NocoDB. Counts update automatically as tickets are added, changed, or closed.</p>
+          <p style="max-width: 780px; margin: 0; font-size: 14px;">Live dashboard pulling open and closed ticket data from NocoDB. Counts update automatically as tickets are added, changed, or closed.</p>
         </div>
         <div class="help-box">
           <div style="font-weight: 900; color: #f8fafc; margin-bottom: 8px;">How to Read This Dashboard</div>
@@ -416,7 +431,8 @@
             <li>• Performance Metrics are based on the selected performance period.</li>
             <li>• Organization Overview is all-time and does not change with the performance period.</li>
             <li>• Open Tickets = any ticket not currently closed.</li>
-            <li>• Click a store or supervisor patch to drill into tickets, then click a ticket number for details.</li>
+            <li>• Store, Patch, and OTP charts only count currently open tickets.</li>
+            <li>• Click a store, patch, or OTP to drill into open tickets, then click a ticket number for details.</li>
           </ul>
         </div>
       </div>
@@ -521,21 +537,23 @@
       <div class="card">
         <div class="breakdown-card-head">
           <h2>Open Tickets by Store</h2>
-          <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click a store</span>
+          <span class="pill">Click a store</span>
         </div>
         <div id="storeBreakdown"></div>
       </div>
+
       <div class="card">
         <div class="breakdown-card-head">
           <h2>Open Tickets by Supervisor Area / Patch</h2>
-          <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click a patch</span>
+          <span class="pill">Click a patch</span>
         </div>
         <div id="patchBreakdown"></div>
       </div>
+
       <div class="card">
         <div class="breakdown-card-head">
           <h2>Open Tickets by OTP</h2>
-          <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click an OTP</span>
+          <span class="pill">Click an OTP</span>
         </div>
         <div id="otpBreakdown"></div>
       </div>
@@ -593,36 +611,10 @@
       closeModal: document.getElementById('closeModal')
     };
 
-    function cleanText(value, fallback = '') {
-      if (value === null || value === undefined || value === '') return fallback;
-
-      if (Array.isArray(value)) {
-        const values = value.map(v => cleanText(v, '')).filter(Boolean);
-        return values.length ? values.join(', ') : fallback;
-      }
-
-      if (typeof value === 'object') {
-        return cleanText(
-          value.display_name ||
-          value.displayName ||
-          value.name ||
-          value.title ||
-          value.email ||
-          value['OTP Name'] ||
-          value['Name'] ||
-          '',
-          fallback
-        );
-      }
-
-      return String(value).trim() || fallback;
-    }
-
     function normalizeRecord(record) {
       const f = record.fields || record;
       const archived = f.Archived === 1 || f.Archived === true || f.Archived === '1';
       const source = archived ? 'closed' : 'open';
-      const status = f.Status || (archived ? 'Closed' : 'New Ticket');
 
       return {
         raw: record,
@@ -630,7 +622,7 @@
         id: record.id || f.Id,
         ticketNumber: f['Ticket Number'] ?? f.Id ?? record.id,
         archived: archived ? 1 : 0,
-        status,
+        status: f.Status || (archived ? 'Closed' : 'New Ticket'),
         reporter: f['Reporter Name'] || '',
         category: f['Device Affected'] || f.Category || 'Uncategorized',
         issue: f['Issue Description'] || '',
@@ -639,14 +631,37 @@
         modified: f['Last Modified'] || f['Last modified time'] || f['Last Modified Time'] || f.Updated || f['Updated At'] || null,
         store: f['Store Name/Number'] || f['Store Number - Name'] || 'No Store Listed',
         patch: f.Patch || f['Supervisor Patch'] || 'No Patch Listed',
-        assigned: cleanText(f['OTP Name Link'] || f['OTP Assigned'] || f['OTP Name'] || f['Assigned OTP'], 'No OTP Listed'),
+        otp: normalizeOtp(f['OTP Name Link'] || f['OTP Assigned'] || f['OTP Name'] || f.OTP),
         hasAttachment: Array.isArray(f.Attachment) && f.Attachment.length > 0
       };
     }
 
+    function normalizeOtp(value) {
+      if (!value) return 'No OTP Listed';
+
+      if (Array.isArray(value)) {
+        const names = value.map(item => {
+          if (typeof item === 'string') return item;
+          return item.display_name || item.title || item.name || item['OTP Name'] || item['Name'] || item.email || '';
+        }).filter(Boolean);
+
+        return names.length ? names.join(', ') : 'No OTP Listed';
+      }
+
+      if (typeof value === 'object') {
+        return value.display_name || value.title || value.name || value['OTP Name'] || value['Name'] || value.email || 'No OTP Listed';
+      }
+
+      return String(value);
+    }
+
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>'"]/g, c => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
       }[c]));
     }
 
@@ -682,7 +697,11 @@
       }).filter(v => v !== null);
 
       if (!durations.length) return { text: 'Unavailable', count: 0 };
-      return { text: formatDuration(durations.reduce((a, b) => a + b, 0) / durations.length), count: durations.length };
+
+      return {
+        text: formatDuration(durations.reduce((a, b) => a + b, 0) / durations.length),
+        count: durations.length
+      };
     }
 
     function getMonthBounds(offset = 0) {
@@ -697,12 +716,42 @@
       let end = null;
       let label = 'All Time';
 
-      if (type === 'currentMonth') { ({ start, end } = getMonthBounds(0)); label = start.toLocaleString([], { month: 'long', year: 'numeric' }); }
-      if (type === 'lastMonth') { ({ start, end } = getMonthBounds(-1)); label = start.toLocaleString([], { month: 'long', year: 'numeric' }); }
-      if (type === 'last7') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 7); label = 'Last 7 Days'; }
-      if (type === 'last30') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 30); label = 'Last 30 Days'; }
-      if (type === 'last90') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 90); label = 'Last 90 Days'; }
-      if (type === 'custom') { start = startValue ? new Date(`${startValue}T00:00:00`) : null; end = endValue ? new Date(`${endValue}T23:59:59`) : null; label = `${startValue || '...'} → ${endValue || '...'}`; }
+      if (type === 'currentMonth') {
+        ({ start, end } = getMonthBounds(0));
+        label = start.toLocaleString([], { month: 'long', year: 'numeric' });
+      }
+
+      if (type === 'lastMonth') {
+        ({ start, end } = getMonthBounds(-1));
+        label = start.toLocaleString([], { month: 'long', year: 'numeric' });
+      }
+
+      if (type === 'last7') {
+        end = new Date();
+        start = new Date();
+        start.setDate(start.getDate() - 7);
+        label = 'Last 7 Days';
+      }
+
+      if (type === 'last30') {
+        end = new Date();
+        start = new Date();
+        start.setDate(start.getDate() - 30);
+        label = 'Last 30 Days';
+      }
+
+      if (type === 'last90') {
+        end = new Date();
+        start = new Date();
+        start.setDate(start.getDate() - 90);
+        label = 'Last 90 Days';
+      }
+
+      if (type === 'custom') {
+        start = startValue ? new Date(`${startValue}T00:00:00`) : null;
+        end = endValue ? new Date(`${endValue}T23:59:59`) : null;
+        label = `${startValue || '...'} → ${endValue || '...'}`;
+      }
 
       return { start, end, label };
     }
@@ -710,10 +759,12 @@
     function inRange(value, bounds) {
       if (!value) return false;
       if (!bounds.start && !bounds.end) return true;
+
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return false;
       if (bounds.start && d < bounds.start) return false;
       if (bounds.end && d > bounds.end) return false;
+
       return true;
     }
 
@@ -734,7 +785,10 @@
       els.closedCount.textContent = state.closed.length.toLocaleString();
       els.totalCount.textContent = state.all.length.toLocaleString();
 
-      const oldestTicket = [...state.open].filter(t => t.created).sort((a, b) => new Date(a.created) - new Date(b.created))[0];
+      const oldestTicket = [...state.open]
+        .filter(t => t.created)
+        .sort((a, b) => new Date(a.created) - new Date(b.created))[0];
+
       if (oldestTicket) {
         els.oldestOpen.textContent = formatAge(oldestTicket.created);
         els.oldestOpenNote.textContent = `Ticket #${oldestTicket.ticketNumber} · ${oldestTicket.store}`;
@@ -748,7 +802,12 @@
     }
 
     function renderPerformanceMetrics() {
-      const bounds = getPeriodBounds(els.performancePeriodFilter.value, els.performanceStartDate.value, els.performanceEndDate.value);
+      const bounds = getPeriodBounds(
+        els.performancePeriodFilter.value,
+        els.performanceStartDate.value,
+        els.performanceEndDate.value
+      );
+
       els.performanceSubtitle.textContent = `Metrics based on ${bounds.label}.`;
 
       const opened = state.all.filter(t => inRange(t.created, bounds));
@@ -758,59 +817,78 @@
       els.perfOpened.textContent = opened.length.toLocaleString();
       els.perfClosed.textContent = closed.length.toLocaleString();
       els.perfAvgResolution.textContent = avg.text;
-      els.perfAvgResolutionNote.textContent = avg.count ? `Based on ${avg.count.toLocaleString()} closed tickets` : 'No closed tickets in period';
-      els.perfCloseRate.textContent = opened.length ? `${Math.round((closed.length / opened.length) * 100)}%` : '0%';
+      els.perfAvgResolutionNote.textContent = avg.count
+        ? `Based on ${avg.count.toLocaleString()} closed tickets`
+        : 'No closed tickets in period';
+      els.perfCloseRate.textContent = opened.length
+        ? `${Math.round((closed.length / opened.length) * 100)}%`
+        : '0%';
     }
 
     function renderBreakdowns() {
       const openOnly = state.open;
+
       renderBreakdown(els.storeBreakdown, countBy(openOnly, 'store'), 'store');
       renderBreakdown(els.patchBreakdown, countBy(openOnly, 'patch'), 'patch');
-      renderBreakdown(els.otpBreakdown, countBy(openOnly, 'assigned'), 'otp');
+      renderBreakdown(els.otpBreakdown, countBy(openOnly, 'otp'), 'otp');
     }
 
     function renderBreakdown(container, counts, type) {
       const entries = sortedEntries(counts);
       const max = Math.max(...entries.map(e => e[1]), 1);
-      const title = type === 'store'
-        ? 'View open tickets for this store'
-        : type === 'otp'
-          ? 'View open tickets for this OTP'
-          : 'View open tickets for this patch';
 
-      container.innerHTML = entries.length ? entries.map(([label, count]) => `
-        <button class="breakdown-row" data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}" title="${title}">
-          <div class="breakdown-row-top">
-            <span class="breakdown-label">${escapeHtml(label)}</span>
-            <span class="breakdown-count">${count.toLocaleString()}</span>
-          </div>
-          <div class="breakdown-track">
-            <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
-          </div>
-        </button>
-      `).join('') : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
+      container.innerHTML = entries.length
+        ? entries.map(([label, count]) => `
+          <button
+            class="breakdown-row"
+            type="button"
+            data-breakdown-type="${escapeHtml(type)}"
+            data-breakdown-label="${escapeHtml(label)}"
+          >
+            <div class="breakdown-row-top">
+              <span class="breakdown-label">${escapeHtml(label)}</span>
+              <span class="breakdown-count">${count.toLocaleString()}</span>
+            </div>
+            <div class="breakdown-track">
+              <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
+            </div>
+          </button>
+        `).join('')
+        : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
+    }
+
+    function sortTicketsForModal(tickets) {
+      return tickets.sort((a, b) => new Date(a.created || 0) - new Date(b.created || 0));
     }
 
     function quickBreakdown(type, label) {
-      const tickets = sortTicketsForModal(state.open.filter(t => {
-        if (type === 'store') return t.store === label;
-        if (type === 'otp') return t.assigned === label;
-        return t.patch === label;
-      }));
-
-      const modalColumns = type === 'store'
-        ? ['ticket', 'issue', 'status', 'category', 'age']
-        : ['ticket', 'store', 'issue', 'status', 'category', 'age'];
+      const tickets = sortTicketsForModal(
+        state.open.filter(t => {
+          if (type === 'store') return t.store === label;
+          if (type === 'patch') return t.patch === label;
+          if (type === 'otp') return t.otp === label;
+          return false;
+        })
+      );
 
       const titleType = type === 'store'
         ? 'Store'
-        : type === 'otp'
-          ? 'OTP'
-          : 'Supervisor Patch';
+        : type === 'patch'
+          ? 'Supervisor Patch'
+          : 'OTP';
+
+      const columns = type === 'store'
+        ? ['ticket', 'issue', 'status', 'category', 'age']
+        : ['ticket', 'store', 'issue', 'status', 'category', 'age'];
 
       els.modalTitle.textContent = `${titleType}: ${label}`;
       els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} open ticket${tickets.length === 1 ? '' : 's'}.`;
-      els.modalTicketList.innerHTML = tableMarkup(tickets, { limit: 500, columns: modalColumns, clickableTickets: true });
+      els.modalTicketList.innerHTML = tableMarkup(tickets, {
+        limit: 500,
+        columns,
+        clickableTickets: true
+      });
+
       els.ticketModal.classList.remove('hidden');
       els.ticketModal.classList.add('flex');
     }
@@ -820,21 +898,35 @@
       const columns = options.columns;
       const clickableTickets = options.clickableTickets || false;
 
-      if (!items.length) return '<div style="padding:16px; color:#94a3b8; font-size:14px;">No tickets found.</div>';
+      if (!items.length) {
+        return '<div style="padding:16px; color:#94a3b8; font-size:14px;">No tickets found.</div>';
+      }
 
-      const headers = { ticket: 'Ticket', store: 'Store', reporter: 'Reporter', issue: 'Issue', patch: 'Patch', status: 'Status', category: 'Category', age: 'Age / Closed' };
+      const headers = {
+        ticket: 'Ticket',
+        store: 'Store',
+        issue: 'Issue',
+        status: 'Status',
+        category: 'Category',
+        age: 'Age'
+      };
+
       const rows = items.slice(0, limit).map(ticket => `
         <tr class="table-row">
           ${columns.map(col => `<td>${cellValue(ticket, col, clickableTickets)}</td>`).join('')}
         </tr>
       `).join('');
 
-      const extra = items.length > limit ? `<div style="border-top:1px solid var(--border); padding:12px; text-align:center; color:#64748b; font-size:12px;">Showing first ${limit.toLocaleString()} results.</div>` : '';
+      const extra = items.length > limit
+        ? `<div style="border-top:1px solid var(--border); padding:12px; text-align:center; color:#64748b; font-size:12px;">Showing first ${limit.toLocaleString()} results.</div>`
+        : '';
 
       return `
         <div class="overflow-x-auto">
           <table>
-            <thead><tr>${columns.map(col => `<th>${headers[col]}</th>`).join('')}</tr></thead>
+            <thead>
+              <tr>${columns.map(col => `<th>${headers[col]}</th>`).join('')}</tr>
+            </thead>
             <tbody>${rows}</tbody>
           </table>
         </div>
@@ -846,15 +938,18 @@
       if (col === 'ticket') {
         const label = `#${escapeHtml(String(ticket.ticketNumber))}`;
         const meta = `<div style="margin-top:4px; font-size:12px; color:#64748b; font-weight:400;">${escapeHtml(ticket.source.toUpperCase())}${ticket.hasAttachment ? ' · Attachment' : ''}</div>`;
-        return clickableTickets ? `<button style="background:none; border:0; color:#bae6fd; text-align:left; font-weight:800;" data-ticket-detail="${escapeHtml(String(ticket.ticketNumber))}">${label}${meta}</button>` : `${label}${meta}`;
+
+        return clickableTickets
+          ? `<button class="ticket-link" type="button" data-ticket-detail="${escapeHtml(String(ticket.ticketNumber))}">${label}${meta}</button>`
+          : `${label}${meta}`;
       }
+
       if (col === 'store') return escapeHtml(ticket.store);
-      if (col === 'reporter') return escapeHtml(ticket.reporter || 'Unknown');
-      if (col === 'issue') return escapeHtml(ticket.issue || 'No issue entered');
-      if (col === 'patch') return escapeHtml(ticket.patch);
+      if (col === 'issue') return escapeHtml(ticket.issue || 'No issue description entered.');
       if (col === 'status') return `<span class="pill" style="padding:4px 8px; font-size:12px;">${escapeHtml(ticket.status)}</span>`;
       if (col === 'category') return escapeHtml(ticket.category);
-      if (col === 'age') return ticket.source === 'open' ? escapeHtml(formatAge(ticket.created)) : escapeHtml(formatDate(ticket.modified));
+      if (col === 'age') return escapeHtml(formatAge(ticket.created));
+
       return '';
     }
 
@@ -876,14 +971,21 @@
           </div>
 
           <div class="ticket-detail-grid">
-            <div><p class="detail-label">Reporter</p><p class="detail-value">${escapeHtml(ticket.reporter || 'Unknown')}</p></div>
+            <div><p class="detail-label">Issue</p><p class="detail-value">${escapeHtml(ticket.issue || 'No issue description entered.')}</p></div>
             <div><p class="detail-label">Category</p><p class="detail-value">${escapeHtml(ticket.category)}</p></div>
+            <div><p class="detail-label">OTP</p><p class="detail-value">${escapeHtml(ticket.otp)}</p></div>
             <div><p class="detail-label">Created</p><p class="detail-value">${escapeHtml(formatDate(ticket.created) || 'Not available')}</p></div>
-            <div><p class="detail-label">Closed / Modified</p><p class="detail-value">${escapeHtml(formatDate(ticket.modified) || 'Not available')}</p></div>
           </div>
 
-          <div style="margin-top:16px;"><p class="detail-label">Issue Description</p><p class="detail-value whitespace-pre-wrap">${escapeHtml(ticket.issue || 'No issue description entered.')}</p></div>
-          <div style="margin-top:16px;"><p class="detail-label">Notes</p><p class="detail-value whitespace-pre-wrap">${escapeHtml(ticket.notes || 'No notes entered.')}</p></div>
+          <div style="margin-top:16px;">
+            <p class="detail-label">Issue Description</p>
+            <p class="detail-value whitespace-pre-wrap">${escapeHtml(ticket.issue || 'No issue description entered.')}</p>
+          </div>
+
+          <div style="margin-top:16px;">
+            <p class="detail-label">Notes</p>
+            <p class="detail-value whitespace-pre-wrap">${escapeHtml(ticket.notes || 'No notes entered.')}</p>
+          </div>
         </div>
       `;
 
@@ -893,12 +995,16 @@
 
     function handleBreakdownClick(event) {
       const btn = event.target.closest('[data-breakdown-type]');
-      if (btn) quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel);
+      if (btn) {
+        quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel);
+      }
     }
 
     function handleTicketDetailClick(event) {
       const btn = event.target.closest('[data-ticket-detail]');
-      if (btn) showTicketDetails(btn.dataset.ticketDetail);
+      if (btn) {
+        showTicketDetails(btn.dataset.ticketDetail);
+      }
     }
 
     function closeTicketModal() {
@@ -940,7 +1046,12 @@
 
         renderSummary();
 
-        els.lastUpdated.textContent = new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        els.lastUpdated.textContent = new Date().toLocaleString([], {
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
+        });
       } catch (error) {
         console.error(error);
         showError(`${error.message}. Check /api/ticket-dashboard and make sure it returns a records array.`);
@@ -950,12 +1061,14 @@
       }
     }
 
-    [els.performancePeriodFilter, els.performanceStartDate, els.performanceEndDate].forEach(el => el.addEventListener('change', () => {
-      const custom = els.performancePeriodFilter.value === 'custom';
-      els.performanceStartDate.disabled = !custom;
-      els.performanceEndDate.disabled = !custom;
-      renderPerformanceMetrics();
-    }));
+    [els.performancePeriodFilter, els.performanceStartDate, els.performanceEndDate].forEach(el => {
+      el.addEventListener('change', () => {
+        const custom = els.performancePeriodFilter.value === 'custom';
+        els.performanceStartDate.disabled = !custom;
+        els.performanceEndDate.disabled = !custom;
+        renderPerformanceMetrics();
+      });
+    });
 
     els.refreshBtn.addEventListener('click', loadDashboard);
     els.storeBreakdown.addEventListener('click', handleBreakdownClick);
@@ -963,8 +1076,12 @@
     els.otpBreakdown.addEventListener('click', handleBreakdownClick);
     els.modalTicketList.addEventListener('click', handleTicketDetailClick);
     els.closeModal.addEventListener('click', closeTicketModal);
-    els.ticketModal.addEventListener('click', event => { if (event.target === els.ticketModal) closeTicketModal(); });
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeTicketModal(); });
+    els.ticketModal.addEventListener('click', event => {
+      if (event.target === els.ticketModal) closeTicketModal();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeTicketModal();
+    });
 
     applyBranding();
     loadDashboard();
