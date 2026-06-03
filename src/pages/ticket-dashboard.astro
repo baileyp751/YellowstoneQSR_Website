@@ -488,9 +488,9 @@
         </div>
 
         <div class="soft">
-          <p class="metric-label">Close Rate</p>
+          <p class="metric-label">Ticket Delta</p>
           <div id="perfCloseRate" class="metric-value">--</div>
-          <p class="metric-note">Closed ÷ Opened</p>
+          <p class="metric-note">Opened - Closed</p>
         </div>
       </div>
     </section>
@@ -859,6 +859,7 @@
       const opened = state.all.filter(ticket => inRange(ticket.created, bounds));
       const closed = state.closed.filter(ticket => inRange(ticket.modified || ticket.created, bounds));
       const avg = averageClosureTime(closed);
+      const delta = opened.length - closed.length;
 
       els.perfOpened.textContent = opened.length.toLocaleString();
       els.perfClosed.textContent = closed.length.toLocaleString();
@@ -866,9 +867,10 @@
       els.perfAvgResolutionNote.textContent = avg.count
         ? `Based on ${avg.count.toLocaleString()} closed tickets`
         : 'No closed tickets in period';
-      els.perfCloseRate.textContent = opened.length
-        ? `${Math.round((closed.length / opened.length) * 100)}%`
-        : '0%';
+
+      els.perfCloseRate.textContent = delta > 0
+        ? `+${delta.toLocaleString()}`
+        : delta.toLocaleString();
     }
 
     function renderBreakdowns() {
