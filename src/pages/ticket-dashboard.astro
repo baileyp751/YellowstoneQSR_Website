@@ -9,604 +9,419 @@
   <title>Technology Ticket Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-  :root {
-    color-scheme: dark;
-    --bg: #020617;
-    --panel: rgba(15, 23, 42, 0.84);
-    --panel-strong: rgba(15, 23, 42, 0.94);
-    --soft: rgba(30, 41, 59, 0.68);
-    --border: rgba(148, 163, 184, 0.18);
-    --border-strong: rgba(148, 163, 184, 0.28);
-    --text: #f8fafc;
-    --muted: #94a3b8;
-    --muted-2: #64748b;
-    --sky: #38bdf8;
-    --sky-dark: #0f172a;
-    --amber: #fbbf24;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  html {
-    min-height: 100%;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at 18% 0%, rgba(56, 189, 248, 0.12), transparent 32rem),
-      radial-gradient(circle at 88% 8%, rgba(129, 140, 248, 0.12), transparent 30rem),
-      linear-gradient(180deg, #020617 0%, #020617 55%, #030712 100%);
-    color: var(--text);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  body > div {
-    width: min(100%, 1280px);
-    margin: 0 auto;
-    padding: 32px;
-  }
-
-  header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 26px;
-  }
-
-  header > div:first-child {
-    max-width: 920px;
-  }
-
-  header > div:last-child {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  #organizationName {
-    margin: 0;
-    color: #7dd3fc;
-    font-size: 13px;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    font-weight: 800;
-  }
-
-  #dashboardTitle {
-    margin: 8px 0 0;
-    font-size: clamp(34px, 4vw, 52px);
-    line-height: 1;
-    letter-spacing: -0.045em;
-    font-weight: 950;
-    color: #fff;
-  }
-
-  #dashboardTitle + div p,
-  header p,
-  section p {
-    color: var(--muted);
-  }
-
-  header .mt-3 {
-    margin-top: 12px;
-  }
-
-  header .mt-4 {
-    margin-top: 16px;
-  }
-
-  header ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  header li {
-    margin-top: 5px;
-    color: var(--muted);
-  }
-
-  .card,
-  header .rounded-2xl.border,
-  #errorBox {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(8px);
-  }
-
-  .card {
-    border-radius: 28px;
-    padding: 22px;
-    margin-bottom: 24px;
-  }
-
-  .soft {
-    background: var(--soft);
-    border: 1px solid rgba(148, 163, 184, 0.14);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-  }
-
-  .pill {
-    border: 1px solid rgba(148, 163, 184, 0.22);
-    background: rgba(15, 23, 42, 0.72);
-    border-radius: 999px;
-  }
-
-  button,
-  select,
-  input {
-    font: inherit;
-  }
-
-  button {
-    cursor: pointer;
-  }
-
-  #refreshBtn {
-    border: 0;
-    border-radius: 18px;
-    background: #38bdf8;
-    color: #020617;
-    padding: 13px 20px;
-    font-size: 14px;
-    font-weight: 900;
-    box-shadow: 0 16px 40px rgba(2, 132, 199, 0.20);
-  }
-
-  #refreshBtn:hover {
-    background: #7dd3fc;
-  }
-
-  #errorBox {
-    border-color: rgba(248, 113, 113, 0.35);
-    background: rgba(127, 29, 29, 0.48);
-    color: #fee2e2;
-    border-radius: 18px;
-    padding: 16px;
-    margin-bottom: 24px;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-
-  .flex {
-    display: flex !important;
-  }
-
-  .grid {
-    display: grid;
-  }
-
-  .block {
-    display: block;
-  }
-
-  .inline-block {
-    display: inline-block;
-  }
-
-  .items-center {
-    align-items: center;
-  }
-
-  .items-start {
-    align-items: flex-start;
-  }
-
-  .justify-between {
-    justify-content: space-between;
-  }
-
-  .gap-2 { gap: 8px; }
-  .gap-3 { gap: 12px; }
-  .gap-4 { gap: 16px; }
-  .gap-6 { gap: 24px; }
-
-  .mb-1 { margin-bottom: 4px; }
-  .mb-2 { margin-bottom: 8px; }
-  .mb-3 { margin-bottom: 12px; }
-  .mb-4 { margin-bottom: 16px; }
-  .mb-6 { margin-bottom: 24px; }
-  .mt-1 { margin-top: 4px; }
-  .mt-2 { margin-top: 8px; }
-  .mt-3 { margin-top: 12px; }
-  .mt-4 { margin-top: 16px; }
-
-  .p-2 { padding: 8px; }
-  .p-3 { padding: 12px; }
-  .p-4 { padding: 16px; }
-  .p-5 { padding: 20px; }
-  .px-2 { padding-left: 8px; padding-right: 8px; }
-  .px-3 { padding-left: 12px; padding-right: 12px; }
-  .px-4 { padding-left: 16px; padding-right: 16px; }
-  .px-5 { padding-left: 20px; padding-right: 20px; }
-  .py-1 { padding-top: 4px; padding-bottom: 4px; }
-  .py-2 { padding-top: 8px; padding-bottom: 8px; }
-  .py-3 { padding-top: 12px; padding-bottom: 12px; }
-
-  .rounded-xl { border-radius: 12px; }
-  .rounded-2xl { border-radius: 18px; }
-  .rounded-3xl { border-radius: 28px; }
-  .rounded-full { border-radius: 999px; }
-
-  .border {
-    border: 1px solid var(--border);
-  }
-
-  .border-t {
-    border-top: 1px solid var(--border);
-  }
-
-  section h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-  }
-
-  .text-xl { font-size: 22px; }
-  .text-2xl { font-size: 28px; }
-  .text-3xl { font-size: 34px; }
-  .text-4xl { font-size: 44px; }
-  .text-sm { font-size: 14px; }
-  .text-xs { font-size: 12px; }
-
-  .font-bold { font-weight: 800; }
-  .font-black { font-weight: 950; }
-  .font-semibold { font-weight: 700; }
-
-  .text-center { text-align: center; }
-  .text-left { text-align: left; }
-
-  .uppercase { text-transform: uppercase; }
-  .tracking-wide { letter-spacing: 0.08em; }
-  .tracking-tight { letter-spacing: -0.035em; }
-
-  .text-slate-100 { color: #f1f5f9; }
-  .text-slate-200 { color: #e2e8f0; }
-  .text-slate-300 { color: #cbd5e1; }
-  .text-slate-400 { color: #94a3b8; }
-  .text-slate-500 { color: #64748b; }
-  .text-sky-100 { color: #e0f2fe; }
-  .text-sky-200 { color: #bae6fd; }
-  .text-sky-300 { color: #7dd3fc; }
-  .text-amber-200 { color: #fde68a; }
-
-  .bg-slate-950,
-  .bg-slate-900\/80 {
-    background: rgba(2, 6, 23, 0.82);
-  }
-
-  .bg-sky-500 {
-    background: #38bdf8;
-  }
-
-  .text-slate-950 {
-    color: #020617;
-  }
-
-  .shadow-lg {
-    box-shadow: 0 18px 50px rgba(0,0,0,0.24);
-  }
-
-  select,
-  input {
-    width: 100%;
-    border: 1px solid rgba(51, 65, 85, 0.95);
-    background: rgba(2, 6, 23, 0.88);
-    color: #f8fafc;
-    border-radius: 14px;
-    padding: 10px 12px;
-    outline: none;
-  }
-
-  select:focus,
-  input:focus {
-    border-color: rgba(56, 189, 248, 0.7);
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-  }
-
-  input:disabled {
-    opacity: 0.45;
-  }
-
-  .grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .sm\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .lg\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .xl\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .xl\:grid-cols-6 {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .soft.text-center,
-  .soft .text-center {
-    text-align: center;
-  }
-
-  .soft.rounded-3xl {
-    min-height: 138px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .soft.rounded-3xl p:first-child {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .soft.rounded-3xl div[id] {
-    margin-top: 8px;
-    line-height: 1;
-  }
-
-  #perfOpened,
-  #perfClosed,
-  #perfOnsite,
-  #openCount,
-  #closedCount,
-  #totalCount {
-    font-size: clamp(36px, 4vw, 48px);
-    font-weight: 950;
-    color: white;
-  }
-
-  #perfAvgResolution,
-  #oldestOpen {
-    font-size: clamp(28px, 3vw, 38px);
-    font-weight: 950;
-    color: white;
-  }
-
-  #upcomingOnsite,
-  #overdueOnsite {
-    overflow: hidden;
-    border-radius: 18px;
-    border: 1px solid rgba(51, 65, 85, 0.75);
-  }
-
-  .bar-bg {
-    background: rgba(51, 65, 85, 0.75);
-  }
-
-  .bar {
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
-  }
-
-  #storeBreakdown,
-  #patchBreakdown {
-    max-height: 650px;
-    overflow-y: auto;
-    padding-right: 8px;
-  }
-
-  #storeBreakdown button,
-  #patchBreakdown button {
-    display: block;
-    width: 100%;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    border-radius: 18px;
-    padding: 10px;
-    text-align: left;
-    transition: background 0.2s ease;
-  }
-
-  #storeBreakdown button:hover,
-  #patchBreakdown button:hover {
-    background: rgba(30, 41, 59, 0.72);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  thead {
-    background: rgba(15, 23, 42, 0.9);
-    color: #64748b;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-  }
-
-  th,
-  td {
-    padding: 12px;
-    vertical-align: top;
-  }
-
-  .table-row:hover {
-    background: rgba(51, 65, 85, 0.48);
-  }
-
-  .fixed {
-    position: fixed;
-  }
-
-  .inset-0 {
-    inset: 0;
-  }
-
-  .z-50 {
-    z-index: 50;
-  }
-
-  #ticketModal {
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.72);
-    padding: 16px;
-    backdrop-filter: blur(5px);
-  }
-
-  #ticketModal > div {
-    width: min(100%, 1152px);
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  #modalTicketList {
-    overflow: auto;
-  }
-
-  .overflow-hidden { overflow: hidden; }
-  .overflow-auto { overflow: auto; }
-  .overflow-x-auto { overflow-x: auto; }
-  .whitespace-nowrap { white-space: nowrap; }
-  .whitespace-pre-wrap { white-space: pre-wrap; }
-  .truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .max-w-4xl { max-width: 896px; }
-  .max-w-6xl { max-width: 1152px; }
-  .max-w-7xl { max-width: 1280px; }
-  .w-full { width: 100%; }
-  .min-w-full { min-width: 100%; }
-  .max-h-\[650px\] { max-height: 650px; }
-  .max-h-\[90vh\] { max-height: 90vh; }
-
-  @keyframes pulseGreen {
-    0%, 100% {
-      box-shadow: inset 0 0 0 1px rgba(34,197,94,.35), 0 0 0 rgba(34,197,94,0);
-    }
-    50% {
-      box-shadow: inset 0 0 0 1px rgba(34,197,94,.85), 0 0 18px rgba(34,197,94,.18);
-    }
-  }
-
-  .visit-in-progress {
-    background: rgba(20, 83, 45, .16);
-    animation: pulseGreen 2.4s ease-in-out infinite;
-  }
-
-  @media (max-width: 1180px) {
-    .xl\:grid-cols-6 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    :root {
+      color-scheme: dark;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.84);
+      --soft: rgba(30, 41, 59, 0.68);
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --sky: #38bdf8;
     }
 
-    .xl\:grid-cols-2 {
-      grid-template-columns: 1fr;
-    }
-  }
+    * { box-sizing: border-box; }
 
-  @media (max-width: 920px) {
-    body > div {
-      padding: 22px;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(56, 189, 248, 0.12), transparent 32rem),
+        radial-gradient(circle at 88% 8%, rgba(129, 140, 248, 0.12), transparent 30rem),
+        linear-gradient(180deg, #020617 0%, #020617 55%, #030712 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page-wrap {
+      width: min(100%, 1280px);
+      margin: 0 auto;
+      padding: 32px;
     }
 
     header {
-      flex-direction: column;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 26px;
     }
 
-    .lg\:grid-cols-4,
-    .md\:grid-cols-4 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    header > div:first-child { max-width: 920px; }
+    header > div:last-child { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-    .sm\:grid-cols-3,
-    .md\:grid-cols-2,
-    .xl\:grid-cols-6 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 560px) {
-    body > div {
-      padding: 16px;
-    }
-
-    .grid,
-    .lg\:grid-cols-4,
-    .md\:grid-cols-4,
-    .sm\:grid-cols-3,
-    .md\:grid-cols-2,
-    .xl\:grid-cols-6,
-    .grid-cols-2 {
-      grid-template-columns: 1fr;
+    #organizationName {
+      margin: 0;
+      color: #7dd3fc;
+      font-size: 13px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      font-weight: 800;
     }
 
     #dashboardTitle {
-      font-size: 34px;
+      margin: 8px 0 0;
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -0.045em;
+      font-weight: 950;
+      color: #fff;
     }
-  }
-</style>
+
+    p { color: var(--muted); }
+
+    .help-box {
+      margin-top: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.62);
+      padding: 16px;
+      color: #cbd5e1;
+    }
+
+    .help-box ul { margin: 8px 0 0; padding: 0; list-style: none; }
+    .help-box li { margin-top: 5px; color: var(--muted); font-size: 14px; }
+
+    .card,
+    .last-updated,
+    #errorBox {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+    }
+
+    .card {
+      border-radius: 28px;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+
+    .soft {
+      background: var(--soft);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      border-radius: 28px;
+      padding: 20px;
+      min-height: 138px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .pill {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      border-radius: 999px;
+    }
+
+    button { cursor: pointer; font: inherit; }
+
+    #refreshBtn {
+      border: 0;
+      border-radius: 18px;
+      background: #38bdf8;
+      color: #020617;
+      padding: 13px 20px;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 16px 40px rgba(2, 132, 199, 0.20);
+    }
+
+    #refreshBtn:hover { background: #7dd3fc; }
+
+    .last-updated {
+      border-radius: 18px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .last-updated-label {
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    #errorBox {
+      display: none;
+      border-color: rgba(248, 113, 113, 0.35);
+      background: rgba(127, 29, 29, 0.48);
+      color: #fee2e2;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    #errorBox:not(.hidden) { display: block; }
+    .hidden { display: none !important; }
+    .flex { display: flex !important; }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    section h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .grid { display: grid; }
+    .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .breakdown-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+
+    .metric-label { margin: 0; color: var(--muted); font-size: 14px; }
+    .metric-value {
+      margin-top: 8px;
+      font-size: clamp(36px, 4vw, 48px);
+      font-weight: 950;
+      color: #fff;
+      line-height: 1;
+    }
+    .metric-note { margin: 8px 0 0; color: #64748b; font-size: 12px; }
+    #perfAvgResolution, #oldestOpen { font-size: clamp(28px, 3vw, 38px); }
+
+    select,
+    input {
+      width: 100%;
+      border: 1px solid rgba(51, 65, 85, 0.95);
+      background: rgba(2, 6, 23, 0.88);
+      color: #f8fafc;
+      border-radius: 14px;
+      padding: 10px 12px;
+      outline: none;
+      font: inherit;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    }
+
+    input:disabled { opacity: 0.45; }
+
+    label span {
+      display: block;
+      margin-bottom: 4px;
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+
+    .period-controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      min-width: min(100%, 560px);
+    }
+
+    #storeBreakdown,
+    #patchBreakdown {
+      max-height: 650px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .breakdown-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    #storeBreakdown button,
+    #patchBreakdown button {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      border-radius: 18px;
+      padding: 10px;
+      text-align: left;
+      transition: background 0.2s ease;
+      margin-bottom: 8px;
+    }
+
+    #storeBreakdown button:hover,
+    #patchBreakdown button:hover { background: rgba(30, 41, 59, 0.72); }
+
+    .breakdown-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .breakdown-label {
+      color: #e2e8f0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .breakdown-count { color: #f8fafc; font-weight: 900; }
+    .bar-bg { height: 8px; overflow: hidden; border-radius: 999px; background: rgba(51, 65, 85, 0.75); }
+    .bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #38bdf8, #818cf8); }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: rgba(15, 23, 42, 0.9); color: #64748b; text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; }
+    th, td { padding: 12px; vertical-align: top; }
+    .table-row { border-top: 1px solid var(--border); }
+    .table-row:hover { background: rgba(51, 65, 85, 0.48); }
+
+    #ticketModal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.72);
+      padding: 16px;
+      backdrop-filter: blur(5px);
+    }
+
+    #ticketModal.flex { display: flex !important; }
+
+    #ticketModal > div {
+      width: min(100%, 1152px);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+    }
+
+    #modalTitle { margin: 0; font-size: 28px; font-weight: 900; }
+    #modalSubtitle { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    #modalTicketList { overflow: auto; padding: 20px; }
+    #closeModal {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #e2e8f0;
+      padding: 8px 16px;
+      font-weight: 800;
+    }
+    #closeModal:hover { background: rgba(30, 41, 59, 0.7); }
+
+    .ticket-detail-card {
+      margin-bottom: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.72);
+      padding: 16px;
+    }
+
+    .ticket-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-label {
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .detail-value { color: #e2e8f0; font-size: 14px; margin: 4px 0 0; }
+    .whitespace-pre-wrap { white-space: pre-wrap; }
+    .overflow-x-auto { overflow-x: auto; }
+
+    .text-sky-200 { color: #bae6fd; }
+    .text-slate-300 { color: #cbd5e1; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .font-bold { font-weight: 800; }
+
+    @media (max-width: 1180px) {
+      .breakdown-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 920px) {
+      .page-wrap { padding: 22px; }
+      header { flex-direction: column; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .period-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; width: 100%; }
+    }
+
+    @media (max-width: 560px) {
+      .page-wrap { padding: 16px; }
+      .metric-grid,
+      .period-controls,
+      .ticket-detail-grid { grid-template-columns: 1fr; }
+      #dashboardTitle { font-size: 34px; }
+    }
+  </style>
 </head>
-<body class="min-h-screen text-slate-100">
-  <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-    <header class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-      <div class="max-w-4xl">
-        <p id="organizationName" class="text-sm uppercase tracking-[0.25em] text-sky-300">Organization Name</p>
-        <h1 id="dashboardTitle" class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Technology Ticket Dashboard</h1>
-        <div class="mt-3 flex flex-wrap items-center gap-3">
-          <p class="max-w-3xl text-sm text-slate-400">Live dashboard pulling open and closed ticket views from NocoDB. Counts update automatically as tickets are added, changed, or closed.</p>
+<body>
+  <div class="page-wrap">
+    <header>
+      <div>
+        <p id="organizationName">Organization Name</p>
+        <h1 id="dashboardTitle">Technology Ticket Dashboard</h1>
+        <div style="margin-top: 12px;">
+          <p style="max-width: 780px; margin: 0; font-size: 14px;">Live dashboard pulling open and closed ticket views from NocoDB. Counts update automatically as tickets are added, changed, or closed.</p>
         </div>
-        <div class="mt-4 rounded-2xl border border-slate-700/60 bg-slate-950/60 p-4 text-sm text-slate-300">
-          <div class="mb-2 font-bold text-slate-100">How to Read This Dashboard</div>
-          <ul class="space-y-1 text-sm text-slate-400">
+        <div class="help-box">
+          <div style="font-weight: 900; color: #f8fafc; margin-bottom: 8px;">How to Read This Dashboard</div>
+          <ul>
             <li>• Performance Metrics are based on the selected performance period.</li>
-            <li>• Organization Overview is all-time and does not change with filters.</li>
+            <li>• Organization Overview is all-time and does not change with the performance period.</li>
             <li>• Open Tickets = any ticket not currently closed.</li>
-            <li>• Upcoming Onsite Visits = future scheduled onsite visits.</li>
-            <li>• Overdue Onsite Visits = onsite visits with past dates still unresolved.</li>
             <li>• Click a store or supervisor patch to drill into tickets, then click a ticket number for details.</li>
           </ul>
         </div>
       </div>
-      <div class="flex flex-wrap items-center gap-3">
-        <div class="soft rounded-2xl px-4 py-3 text-sm text-slate-300">
-          <div class="text-xs uppercase tracking-wide text-slate-500">Last Updated</div>
-          <div id="lastUpdated" class="font-semibold text-slate-100">Loading...</div>
+
+      <div>
+        <div class="last-updated">
+          <div class="last-updated-label">Last Updated</div>
+          <div id="lastUpdated" style="font-weight: 800; color: #f8fafc;">Loading...</div>
         </div>
-        <button id="refreshBtn" class="rounded-2xl bg-sky-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-sky-950/40 hover:bg-sky-400">Refresh</button>
+        <button id="refreshBtn">Refresh</button>
       </div>
     </header>
 
-    <div id="errorBox" class="mb-6 hidden rounded-2xl border border-red-400/30 bg-red-950/50 p-4 text-sm text-red-100"></div>
+    <div id="errorBox" class="hidden"></div>
 
-    <section class="card mb-6 rounded-3xl p-5">
-      <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+    <section class="card">
+      <div class="section-head">
         <div>
-          <h2 class="text-xl font-bold">Performance Metrics</h2>
-          <p id="performanceSubtitle" class="text-sm text-slate-400">Metrics based on the selected performance period.</p>
+          <h2>Performance Metrics</h2>
+          <p id="performanceSubtitle" style="margin: 4px 0 0; font-size: 14px;">Metrics based on the selected performance period.</p>
         </div>
-        <div class="grid gap-3 sm:grid-cols-3">
-          <label class="block">
-            <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Performance Period</span>
-            <select id="performancePeriodFilter" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm">
+        <div class="period-controls">
+          <label>
+            <span>Performance Period</span>
+            <select id="performancePeriodFilter">
               <option value="currentMonth">Current Month</option>
               <option value="lastMonth">Last Month</option>
               <option value="last7">Last 7 Days</option>
@@ -616,102 +431,104 @@
               <option value="custom">Custom Range</option>
             </select>
           </label>
-          <label class="block">
-            <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Start Date</span>
-            <input id="performanceStartDate" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" />
+          <label>
+            <span>Start Date</span>
+            <input id="performanceStartDate" type="date" disabled />
           </label>
-          <label class="block">
-            <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">End Date</span>
-            <input id="performanceEndDate" type="date" disabled class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm disabled:opacity-40" />
+          <label>
+            <span>End Date</span>
+            <input id="performanceEndDate" type="date" disabled />
           </label>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Tickets Opened</p>
-          <div id="perfOpened" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Created in period</p>
+
+      <div class="grid metric-grid">
+        <div class="soft">
+          <p class="metric-label">Tickets Opened</p>
+          <div id="perfOpened" class="metric-value">--</div>
+          <p class="metric-note">Created in period</p>
         </div>
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Tickets Closed</p>
-          <div id="perfClosed" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Closed in period</p>
+        <div class="soft">
+          <p class="metric-label">Tickets Closed</p>
+          <div id="perfClosed" class="metric-value">--</div>
+          <p class="metric-note">Closed in period</p>
         </div>
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Avg Resolution</p>
-          <div id="perfAvgResolution" class="mt-2 text-3xl font-black">--</div>
-          <p id="perfAvgResolutionNote" class="mt-2 text-xs text-slate-500">Requires Created + Last modified</p>
+        <div class="soft">
+          <p class="metric-label">Avg Resolution</p>
+          <div id="perfAvgResolution" class="metric-value">--</div>
+          <p id="perfAvgResolutionNote" class="metric-note">Requires Created + Last Modified</p>
         </div>
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Active Onsite</p>
-          <div id="perfOnsite" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Scheduled in period</p>
+        <div class="soft">
+          <p class="metric-label">Close Rate</p>
+          <div id="perfCloseRate" class="metric-value">--</div>
+          <p class="metric-note">Closed ÷ Opened</p>
         </div>
       </div>
     </section>
 
-    <section class="card mb-6 rounded-3xl p-5">
-      <div class="mb-4">
-        <h2 class="text-xl font-bold">Organization Overview</h2>
-        <p class="text-sm text-slate-400">All-time organization health and accountability metrics.</p>
+    <section class="card">
+      <div class="section-head">
+        <div>
+          <h2>Organization Overview</h2>
+          <p style="margin: 4px 0 0; font-size: 14px;">All-time organization health and accountability metrics.</p>
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Open Tickets</p>
-          <div id="openCount" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Anything not closed</p>
+      <div class="grid metric-grid">
+        <div class="soft">
+          <p class="metric-label">Open Tickets</p>
+          <div id="openCount" class="metric-value">--</div>
+          <p class="metric-note">Anything not closed</p>
         </div>
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Closed Tickets</p>
-          <div id="closedCount" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Archived / closed view</p>
+        <div class="soft">
+          <p class="metric-label">Closed Tickets</p>
+          <div id="closedCount" class="metric-value">--</div>
+          <p class="metric-note">Archived / closed view</p>
         </div>
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Total Tickets</p>
-          <div id="totalCount" class="mt-2 text-4xl font-black">--</div>
-          <p class="mt-2 text-xs text-slate-500">Open + closed</p>
+        <div class="soft">
+          <p class="metric-label">Total Tickets</p>
+          <div id="totalCount" class="metric-value">--</div>
+          <p class="metric-note">Open + closed</p>
         </div>
-        <div class="soft rounded-3xl p-5 text-center">
-          <p class="text-sm text-slate-400">Oldest Open</p>
-          <div id="oldestOpen" class="mt-2 text-3xl font-black">--</div>
-          <p id="oldestOpenNote" class="mt-2 text-xs text-slate-500">Longest aging open ticket</p>
+        <div class="soft">
+          <p class="metric-label">Oldest Open</p>
+          <div id="oldestOpen" class="metric-value">--</div>
+          <p id="oldestOpenNote" class="metric-note">Longest aging open ticket</p>
         </div>
       </div>
     </section>
-    
 
-    <section class="mb-6 grid gap-6 xl:grid-cols-2">
-      <div class="card rounded-3xl p-5">
-        <div class="mb-4 flex items-center justify-between gap-3"><h2 class="text-xl font-bold">Tickets by Store</h2><span class="pill rounded-full px-3 py-1 text-xs text-slate-300">Click a store</span></div>
-        <div id="storeBreakdown" class="max-h-[650px] space-y-2 overflow-y-auto pr-2"></div>
+    <section class="grid breakdown-grid">
+      <div class="card">
+        <div class="breakdown-card-head">
+          <h2>Tickets by Store</h2>
+          <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click a store</span>
+        </div>
+        <div id="storeBreakdown"></div>
       </div>
-      <div class="card rounded-3xl p-5">
-        <div class="mb-4 flex items-center justify-between gap-3"><h2 class="text-xl font-bold">Tickets by Supervisor Area / Patch</h2><span class="pill rounded-full px-3 py-1 text-xs text-slate-300">Click a patch</span></div>
-        <div id="patchBreakdown" class="max-h-[650px] space-y-2 overflow-y-auto pr-2"></div>
+      <div class="card">
+        <div class="breakdown-card-head">
+          <h2>Tickets by Supervisor Area / Patch</h2>
+          <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click a patch</span>
+        </div>
+        <div id="patchBreakdown"></div>
       </div>
     </section>
   </div>
 
-  <div id="ticketModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-    <div class="card flex max-h-[90vh] w-full max-w-6xl flex-col rounded-3xl">
-      <div class="flex items-start justify-between gap-4 border-b border-slate-700/60 p-5">
-        <div><h2 id="modalTitle" class="text-2xl font-bold">Tickets</h2><p id="modalSubtitle" class="mt-1 text-sm text-slate-400"></p></div>
-        <button id="closeModal" class="rounded-xl border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800">Close</button>
+  <div id="ticketModal" class="hidden">
+    <div class="card">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle">Tickets</h2>
+          <p id="modalSubtitle"></p>
+        </div>
+        <button id="closeModal">Close</button>
       </div>
-      <div id="modalTicketList" class="overflow-auto p-5"></div>
+      <div id="modalTicketList"></div>
     </div>
   </div>
+
   <script>
-    // =========================
-    // DASHBOARD SETUP
-    // =========================
-    // Replace these values with your organization's information.
-    //
-    // openUrl:   NocoDB API URL/view for open tickets
-    // closedUrl: NocoDB API URL/view for closed or archived tickets
-    // apiKey:    NocoDB API token. Leave blank if your URL is already behind an API proxy.
-    // apiKeyHeader: Most NocoDB setups use 'xc-token'. If your API uses Authorization Bearer,
-    //               change apiKeyHeader to 'Authorization' and apiKeyPrefix to 'Bearer '.
     const CONFIG = {
       organizationName: 'Yellowstone QSR',
       dashboardTitle: 'Technology Ticket Dashboard',
@@ -719,19 +536,38 @@
       refreshMinutes: 5
     };
 
-    const state = { open: [], closed: [], all: [], filtered: [], upcomingOnsiteGroups: [], overdueOnsiteGroups: [] };
+    const state = { open: [], closed: [], all: [] };
+
     const els = {
-      lastUpdated: document.getElementById('lastUpdated'), errorBox: document.getElementById('errorBox'), refreshBtn: document.getElementById('refreshBtn'), 
-      perfOpened: document.getElementById('perfOpened'), perfClosed: document.getElementById('perfClosed'), perfAvgResolution: document.getElementById('perfAvgResolution'), perfAvgResolutionNote: document.getElementById('perfAvgResolutionNote'), perfOnsite: document.getElementById('perfOnsite'), performanceSubtitle: document.getElementById('performanceSubtitle'), performancePeriodFilter: document.getElementById('performancePeriodFilter'), performanceStartDate: document.getElementById('performanceStartDate'), performanceEndDate: document.getElementById('performanceEndDate'),
-      openCount: document.getElementById('openCount'), closedCount: document.getElementById('closedCount'), totalCount: document.getElementById('totalCount'), oldestOpen: document.getElementById('oldestOpen'), oldestOpenNote: document.getElementById('oldestOpenNote'),
-      upcomingOnsite: document.getElementById('upcomingOnsite'), upcomingOnsiteLabel: document.getElementById('upcomingOnsiteLabel'), overdueOnsite: document.getElementById('overdueOnsite'), overdueOnsiteLabel: document.getElementById('overdueOnsiteLabel'),
-      setFilter: document.getElementById('setFilter'), statusFilter: document.getElementById('statusFilter'), storeFilter: document.getElementById('storeFilter'), patchFilter: document.getElementById('patchFilter'), categoryFilter: document.getElementById('categoryFilter'), onsiteFilter: document.getElementById('onsiteFilter'), dateRangeFilter: document.getElementById('dateRangeFilter'), startDateFilter: document.getElementById('startDateFilter'), endDateFilter: document.getElementById('endDateFilter'), searchInput: document.getElementById('searchInput'), clearFilters: document.getElementById('clearFilters'),
-      storeBreakdown: document.getElementById('storeBreakdown'), patchBreakdown: document.getElementById('patchBreakdown'), ticketModal: document.getElementById('ticketModal'), modalTitle: document.getElementById('modalTitle'), modalSubtitle: document.getElementById('modalSubtitle'), modalTicketList: document.getElementById('modalTicketList'), closeModal: document.getElementById('closeModal')
+      lastUpdated: document.getElementById('lastUpdated'),
+      errorBox: document.getElementById('errorBox'),
+      refreshBtn: document.getElementById('refreshBtn'),
+      perfOpened: document.getElementById('perfOpened'),
+      perfClosed: document.getElementById('perfClosed'),
+      perfAvgResolution: document.getElementById('perfAvgResolution'),
+      perfAvgResolutionNote: document.getElementById('perfAvgResolutionNote'),
+      perfCloseRate: document.getElementById('perfCloseRate'),
+      performanceSubtitle: document.getElementById('performanceSubtitle'),
+      performancePeriodFilter: document.getElementById('performancePeriodFilter'),
+      performanceStartDate: document.getElementById('performanceStartDate'),
+      performanceEndDate: document.getElementById('performanceEndDate'),
+      openCount: document.getElementById('openCount'),
+      closedCount: document.getElementById('closedCount'),
+      totalCount: document.getElementById('totalCount'),
+      oldestOpen: document.getElementById('oldestOpen'),
+      oldestOpenNote: document.getElementById('oldestOpenNote'),
+      storeBreakdown: document.getElementById('storeBreakdown'),
+      patchBreakdown: document.getElementById('patchBreakdown'),
+      ticketModal: document.getElementById('ticketModal'),
+      modalTitle: document.getElementById('modalTitle'),
+      modalSubtitle: document.getElementById('modalSubtitle'),
+      modalTicketList: document.getElementById('modalTicketList'),
+      closeModal: document.getElementById('closeModal')
     };
 
     function normalizeRecord(record) {
       const f = record.fields || record;
-      const archived = f.Archived === 1 || f.Archived === true || f.Archived === "1";
+      const archived = f.Archived === 1 || f.Archived === true || f.Archived === '1';
       const source = archived ? 'closed' : 'open';
       const status = f.Status || (archived ? 'Closed' : 'New Ticket');
 
@@ -750,45 +586,48 @@
         modified: f['Last Modified'] || f['Last modified time'] || f['Last Modified Time'] || f.Updated || f['Updated At'] || null,
         store: f['Store Name/Number'] || f['Store Number - Name'] || 'No Store Listed',
         patch: f.Patch || f['Supervisor Patch'] || 'No Patch Listed',
-        onsite: f['Onsite Schedule'] || null,
         assigned: f['OTP Name Link'] || f['OTP Assigned'] || '',
         hasAttachment: Array.isArray(f.Attachment) && f.Attachment.length > 0
       };
     }
 
-    function addOrReplaceParam(url, key, value) { const u = new URL(url); u.searchParams.set(key, value); return u.toString(); }
-    async function fetchRecords(baseUrl) {
-      let url = baseUrl, records = [], guard = 0;
-      while (url && guard < 20) {
-        guard++;
-        const headers = {};
-        if (CONFIG.apiKey && !CONFIG.apiKey.startsWith('PASTE_')) {
-          headers[CONFIG.apiKeyHeader || 'xc-token'] = `${CONFIG.apiKeyPrefix || ''}${CONFIG.apiKey}`;
-        }
-        const response = await fetch(url, { headers });
-        if (!response.ok) throw new Error(`NocoDB request failed (${response.status}) for ${url}`);
-        const data = await response.json();
-        records = records.concat(data.records || data.list || []);
-        const next = data.nestedNext || data.next || data.nextPage || data.pageInfo?.nextPage;
-        const isLast = data.pageInfo?.isLastPage === true;
-        if (!next || isLast) break;
-        if (typeof next === 'string' && next.startsWith('http')) url = next;
-        else if (typeof next === 'string') url = addOrReplaceParam(baseUrl, 'nestedNext', next);
-        else if (typeof next === 'number') url = addOrReplaceParam(baseUrl, 'page', next);
-        else break;
-      }
-      return records;
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>'"]/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[c]));
     }
 
-    function countBy(items, key) { return items.reduce((acc, item) => { const v = item[key] || 'Blank'; acc[v] = (acc[v] || 0) + 1; return acc; }, {}); }
-    function sortedEntries(obj) { return Object.entries(obj).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])); }
-    function uniqueSorted(items, key) { return [...new Set(items.map(item => item[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b)); }
-    function escapeHtml(value) { return String(value ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
-    function formatDate(value) { if (!value) return ''; const d = new Date(value); if (Number.isNaN(d.getTime())) return value; return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }); }
-    function formatAge(value) { if (!value) return 'Unknown'; const d = new Date(value); if (Number.isNaN(d.getTime())) return 'Unknown'; const days = Math.floor((Date.now() - d.getTime()) / 86400000); if (days < 1) return 'Today'; if (days === 1) return '1 day'; return `${days} days`; }
-    function formatDuration(ms) { if (!Number.isFinite(ms) || ms < 0) return 'Unavailable'; const hours = ms / 3600000; return hours < 48 ? `${hours.toFixed(1)} hrs` : `${(hours / 24).toFixed(1)} days`; }
+    function formatDate(value) {
+      if (!value) return '';
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return value;
+      return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function formatAge(value) {
+      if (!value) return 'Unknown';
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return 'Unknown';
+      const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+      if (days < 1) return 'Today';
+      if (days === 1) return '1 day';
+      return `${days} days`;
+    }
+
+    function formatDuration(ms) {
+      if (!Number.isFinite(ms) || ms < 0) return 'Unavailable';
+      const hours = ms / 3600000;
+      return hours < 48 ? `${hours.toFixed(1)} hrs` : `${(hours / 24).toFixed(1)} days`;
+    }
+
     function averageClosureTime(closed) {
-      const durations = closed.map(t => { if (!t.created || !t.modified) return null; const s = new Date(t.created).getTime(), e = new Date(t.modified).getTime(); return Number.isFinite(s) && Number.isFinite(e) && e >= s ? e - s : null; }).filter(v => v !== null);
+      const durations = closed.map(t => {
+        if (!t.created || !t.modified) return null;
+        const s = new Date(t.created).getTime();
+        const e = new Date(t.modified).getTime();
+        return Number.isFinite(s) && Number.isFinite(e) && e >= s ? e - s : null;
+      }).filter(v => v !== null);
+
       if (!durations.length) return { text: 'Unavailable', count: 0 };
       return { text: formatDuration(durations.reduce((a, b) => a + b, 0) / durations.length), count: durations.length };
     }
@@ -799,16 +638,22 @@
       const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0, 23, 59, 59, 999);
       return { start, end };
     }
+
     function getPeriodBounds(type, startValue, endValue) {
-      let start = null, end = null, label = 'All Time';
+      let start = null;
+      let end = null;
+      let label = 'All Time';
+
       if (type === 'currentMonth') { ({ start, end } = getMonthBounds(0)); label = start.toLocaleString([], { month: 'long', year: 'numeric' }); }
       if (type === 'lastMonth') { ({ start, end } = getMonthBounds(-1)); label = start.toLocaleString([], { month: 'long', year: 'numeric' }); }
       if (type === 'last7') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 7); label = 'Last 7 Days'; }
       if (type === 'last30') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 30); label = 'Last 30 Days'; }
       if (type === 'last90') { end = new Date(); start = new Date(); start.setDate(start.getDate() - 90); label = 'Last 90 Days'; }
       if (type === 'custom') { start = startValue ? new Date(`${startValue}T00:00:00`) : null; end = endValue ? new Date(`${endValue}T23:59:59`) : null; label = `${startValue || '...'} → ${endValue || '...'}`; }
+
       return { start, end, label };
     }
+
     function inRange(value, bounds) {
       if (!value) return false;
       if (!bounds.start && !bounds.end) return true;
@@ -819,319 +664,198 @@
       return true;
     }
 
-    function populateSelect(select, values, allLabel) { const current = select.value; select.innerHTML = `<option value="all">${allLabel}</option>` + values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join(''); if ([...select.options].some(o => o.value === current)) select.value = current; }
-    function setupFilters() {
-      const currentSet = els.setFilter.value || 'open';
-      els.setFilter.innerHTML = '<option value="all">All Tickets</option><option value="open">Open Tickets</option><option value="closed">Closed Tickets</option>';
-      els.setFilter.value = currentSet;
-      populateSelect(els.statusFilter, uniqueSorted(state.all, 'status'), 'All Statuses');
-      populateSelect(els.storeFilter, uniqueSorted(state.all, 'store'), 'All Stores');
-      populateSelect(els.patchFilter, uniqueSorted(state.all, 'patch'), 'All Patches');
-      populateSelect(els.categoryFilter, uniqueSorted(state.all, 'category'), 'All Categories');
-    }
-function passesTicketDateFilter(ticket) {
-      const type = els.dateRangeFilter.value;
-      if (type === 'all') return true;
-      const bounds = getPeriodBounds(type === 'thisMonth' ? 'currentMonth' : type, els.startDateFilter.value, els.endDateFilter.value);
-      const dateSource = ticket.source === 'closed' ? (ticket.modified || ticket.created) : ticket.created;
-      return inRange(dateSource, bounds);
+    function countBy(items, key) {
+      return items.reduce((acc, item) => {
+        const value = item[key] || 'Blank';
+        acc[value] = (acc[value] || 0) + 1;
+        return acc;
+      }, {});
     }
 
-    function applyFilters() {
-      
-      const setValue = els.setFilter.value, statusValue = els.statusFilter.value, storeValue = els.storeFilter.value, patchValue = els.patchFilter.value, categoryValue = els.categoryFilter.value, onsiteValue = els.onsiteFilter.value, search = els.searchInput.value.trim().toLowerCase();
-      state.filtered = state.all.filter(t => {
-        if (setValue !== 'all' && t.source !== setValue) return false;
-        if (statusValue !== 'all' && t.status !== statusValue) return false;
-        if (storeValue !== 'all' && t.store !== storeValue) return false;
-        if (patchValue !== 'all' && t.patch !== patchValue) return false;
-        if (categoryValue !== 'all' && t.category !== categoryValue) return false;
-        if (onsiteValue === 'scheduled' && t.status !== 'Onsite Scheduled') return false;
-        if (onsiteValue === 'notScheduled' && t.status === 'Onsite Scheduled') return false;
-        if (!passesTicketDateFilter(t)) return false;
-        if (search) {
-          const haystack = [t.ticketNumber, t.status, t.reporter, t.category, t.issue, t.notes, t.store, t.patch].join(' ').toLowerCase();
-          if (!haystack.includes(search)) return false;
-        }
-        return true;
-      });
-      renderFilteredSections();
+    function sortedEntries(obj) {
+      return Object.entries(obj).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
     }
 
     function renderSummary() {
       els.openCount.textContent = state.open.length.toLocaleString();
       els.closedCount.textContent = state.closed.length.toLocaleString();
       els.totalCount.textContent = state.all.length.toLocaleString();
+
       const oldestTicket = [...state.open].filter(t => t.created).sort((a, b) => new Date(a.created) - new Date(b.created))[0];
-      if (oldestTicket) { els.oldestOpen.textContent = formatAge(oldestTicket.created); els.oldestOpenNote.textContent = `Ticket #${oldestTicket.ticketNumber} · ${oldestTicket.store}`; }
-      else { els.oldestOpen.textContent = '--'; els.oldestOpenNote.textContent = 'No open tickets'; }
+      if (oldestTicket) {
+        els.oldestOpen.textContent = formatAge(oldestTicket.created);
+        els.oldestOpenNote.textContent = `Ticket #${oldestTicket.ticketNumber} · ${oldestTicket.store}`;
+      } else {
+        els.oldestOpen.textContent = '--';
+        els.oldestOpenNote.textContent = 'No open tickets';
+      }
+
       renderPerformanceMetrics();
-      renderUpcomingOnsite();
+      renderBreakdowns();
     }
 
     function renderPerformanceMetrics() {
       const bounds = getPeriodBounds(els.performancePeriodFilter.value, els.performanceStartDate.value, els.performanceEndDate.value);
       els.performanceSubtitle.textContent = `Metrics based on ${bounds.label}.`;
+
       const opened = state.all.filter(t => inRange(t.created, bounds));
       const closed = state.closed.filter(t => inRange(t.modified || t.created, bounds));
-      const onsite = state.open.filter(t => t.status === 'Onsite Scheduled' && inRange(t.onsite, bounds));
       const avg = averageClosureTime(closed);
+
       els.perfOpened.textContent = opened.length.toLocaleString();
       els.perfClosed.textContent = closed.length.toLocaleString();
-      els.perfOnsite.textContent = onsite.length.toLocaleString();
       els.perfAvgResolution.textContent = avg.text;
-      els.perfAvgResolutionNote.textContent = avg.count ? `Based on ${avg.count.toLocaleString()} closed tickets` : 'Closed view needs Created field';
+      els.perfAvgResolutionNote.textContent = avg.count ? `Based on ${avg.count.toLocaleString()} closed tickets` : 'No closed tickets in period';
+      els.perfCloseRate.textContent = opened.length ? `${Math.round((closed.length / opened.length) * 100)}%` : '0%';
     }
 
-    function buildOnsiteGroups(tickets) {
-      const groups = new Map();
-
-      tickets.forEach(ticket => {
-        const scheduleKey = ticket.onsite || "Not scheduled";
-        const key = `${ticket.store}||${scheduleKey}`;
-
-        if (!groups.has(key)) {
-          groups.set(key, {
-            store: ticket.store,
-            onsite: ticket.onsite,
-            tickets: []
-          });
-        }
-
-        groups.get(key).tickets.push(ticket);
-      });
-
-      return [...groups.values()].sort((a, b) => {
-        const ad = new Date(a.onsite || 0).getTime();
-        const bd = new Date(b.onsite || 0).getTime();
-        return ad - bd || a.store.localeCompare(b.store);
-      });
+    function renderBreakdowns() {
+      renderBreakdown(els.storeBreakdown, countBy(state.all, 'store'), 'store');
+      renderBreakdown(els.patchBreakdown, countBy(state.all, 'patch'), 'patch');
     }
 
-    function renderUpcomingOnsite() {
-      const now = new Date();
-      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-      const onsiteTickets = state.open.filter(t => t.status === 'Onsite Scheduled');
-
-      // Keep same-day visits in Upcoming all day.
-      // Only move to Overdue starting the next day.
-      const upcomingTickets = onsiteTickets.filter(t => {
-        if (!t.onsite) return true;
-        const visitDate = new Date(t.onsite);
-        if (Number.isNaN(visitDate.getTime())) return true;
-        return visitDate >= todayStart;
-      });
-
-      const overdueTickets = onsiteTickets.filter(t => {
-        if (!t.onsite) return false;
-        const visitDate = new Date(t.onsite);
-        if (Number.isNaN(visitDate.getTime())) return false;
-        return visitDate < todayStart;
-      });
-
-      state.upcomingOnsiteGroups = buildOnsiteGroups(upcomingTickets);
-      state.overdueOnsiteGroups = buildOnsiteGroups(overdueTickets);
-
-      els.upcomingOnsiteLabel.textContent = `${state.upcomingOnsiteGroups.length.toLocaleString()} visit${state.upcomingOnsiteGroups.length === 1 ? '' : 's'}`;
-      els.overdueOnsiteLabel.textContent = `${state.overdueOnsiteGroups.length.toLocaleString()} overdue visit${state.overdueOnsiteGroups.length === 1 ? '' : 's'}`;
-
-      els.upcomingOnsite.innerHTML = onsiteGroupTableMarkup(state.upcomingOnsiteGroups, false);
-      els.overdueOnsite.innerHTML = onsiteGroupTableMarkup(state.overdueOnsiteGroups, true);
-    }
-
-    function onsiteGroupTableMarkup(groups, showDaysOverdue = false) {
-      if (!groups.length) {
-        return '<div class="p-4 text-sm text-slate-400">No onsite visits found.</div>';
-      }
-
-      const columns = showDaysOverdue
-        ? ['store', 'onsite', 'count', 'overdue']
-        : ['store', 'onsite', 'visitStatus', 'count'];
-
-      const headers = {
-        store: 'Store',
-        onsite: 'Onsite',
-        visitStatus: 'Status',
-        count: 'Issues',
-        overdue: 'Overdue'
-      };
-
-      const columnClasses = {
-        store: 'w-[38%]',
-        onsite: 'w-[28%] whitespace-nowrap',
-        visitStatus: 'w-[16%] whitespace-nowrap',
-        count: 'w-[18%] whitespace-nowrap',
-        overdue: 'w-[18%] whitespace-nowrap'
-      };
-
-      const rows = groups.map((group, index) => {
-        const inProgress = !showDaysOverdue && getVisitStatus(group) === 'In Progress';
-        return `
-          <tr class="table-row cursor-pointer border-t border-slate-700/60 ${inProgress ? 'visit-in-progress' : ''}" data-onsite-group="${index}" data-overdue="${showDaysOverdue ? '1' : '0'}">
-            ${columns.map(col => `<td class="px-2.5 py-3 align-middle text-sm text-slate-300 ${columnClasses[col] || ''}">${onsiteGroupCell(group, col)}</td>`).join('')}
-          </tr>
-        `;
-      }).join('');
-
-      return `
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-left">
-            <thead class="bg-slate-900/80 text-xs uppercase tracking-wide text-slate-500">
-              <tr>${columns.map(col => `<th class="px-2.5 py-3 font-bold ${columnClasses[col] || ''}">${headers[col]}</th>`).join('')}</tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function formatOnsiteShortDate(value) {
-      if (!value) return '';
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return value;
-      return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-    }
-
-    function getVisitStatus(group) {
-      if (!group.onsite) return 'Scheduled';
-
-      const now = new Date();
-      const start = new Date(group.onsite);
-      if (Number.isNaN(start.getTime())) return 'Scheduled';
-
-      const end = new Date(start.getTime() + (2 * 60 * 60 * 1000));
-      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
-      if (start < todayStart) return 'Overdue';
-      if (now >= start && now <= end) return 'In Progress';
-      if (start >= todayStart && start < tomorrowStart && now > end) return 'Today';
-      return 'Scheduled';
-    }
-
-    function onsiteGroupCell(group, col) {
-      if (col === 'store') return `<span class="font-semibold text-sky-100">${escapeHtml(group.store)}</span>`;
-      if (col === 'onsite') return `<span class="whitespace-nowrap">${escapeHtml(formatOnsiteShortDate(group.onsite) || 'Not scheduled')}</span>`;
-      if (col === 'visitStatus') {
-        const status = getVisitStatus(group);
-        if (status === 'In Progress') return '<span class="whitespace-nowrap rounded-full border border-green-400/40 bg-green-950/50 px-2 py-1 text-xs font-semibold text-green-200">In Progress</span>';
-        if (status === 'Today') return '<span class="whitespace-nowrap rounded-full border border-sky-400/30 bg-sky-950/40 px-2 py-1 text-xs text-sky-200">Today</span>';
-        return `<span class="pill whitespace-nowrap rounded-full px-2 py-1 text-xs">${escapeHtml(status)}</span>`;
-      }
-      if (col === 'count') return `<span class="pill whitespace-nowrap rounded-full px-2 py-1 text-xs">${group.tickets.length.toLocaleString()} ticket${group.tickets.length === 1 ? '' : 's'}</span>`;
-      if (col === 'overdue') {
-        if (!group.onsite) return 'No date';
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
-        const visitDate = new Date(group.onsite);
-        visitDate.setHours(0, 0, 0, 0);
-        const days = Math.max(1, Math.floor((todayStart - visitDate) / 86400000));
-        return `${days.toLocaleString()} day${days === 1 ? '' : 's'}`;
-      }
-      return '';
-    }
-
-    function renderFilteredSections() {
-      renderBreakdown(els.storeBreakdown, countBy(state.filtered, 'store'), 'store');
-      renderBreakdown(els.patchBreakdown, countBy(state.filtered, 'patch'), 'patch');
-    }
     function renderBreakdown(container, counts, type) {
-      const entries = sortedEntries(counts), max = Math.max(...entries.map(e => e[1]), 1), clickHint = type === 'store' ? 'View tickets for this store' : 'View tickets for this patch';
-      container.innerHTML = entries.length ? entries.map(([label, count]) => `<button class="w-full rounded-2xl p-2 text-left transition hover:bg-slate-800/70 focus:outline-none focus:ring-2 focus:ring-sky-500/70" data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}" title="${clickHint}"><div class="mb-1 flex items-center justify-between gap-3 text-sm"><span class="truncate text-slate-200">${escapeHtml(label)}</span><span class="font-bold text-slate-100">${count.toLocaleString()}</span></div><div class="bar-bg h-2 overflow-hidden rounded-full"><div class="bar h-full rounded-full" style="width:${(count / max) * 100}%"></div></div></button>`).join('') : '<div class="text-sm text-slate-400">No results match the current filters.</div>';
-    }
+      const entries = sortedEntries(counts);
+      const max = Math.max(...entries.map(e => e[1]), 1);
 
-    function tableMarkup(items, options) {
-      const limit = options.limit || 50, columns = options.columns, clickableTickets = options.clickableTickets || false;
-      if (!items.length) return '<div class="p-4 text-sm text-slate-400">No tickets found.</div>';
-      const headers = { ticket: 'Ticket', store: 'Store', reporter: 'Reporter', patch: 'Patch', status: 'Status', category: 'Category', age: 'Age / Closed', onsite: 'Onsite Schedule' };
-      const rows = items.slice(0, limit).map(ticket => `<tr class="table-row border-t border-slate-700/60">${columns.map(col => `<td class="px-3 py-3 align-top text-sm ${col === 'ticket' ? 'font-bold text-sky-200' : 'text-slate-300'}">${cellValue(ticket, col, clickableTickets)}</td>`).join('')}</tr>`).join('');
-      const extra = items.length > limit ? `<div class="border-t border-slate-700/60 p-3 text-center text-xs text-slate-500">Showing first ${limit.toLocaleString()} results. Use filters/search to narrow the list.</div>` : '';
-      return `<div class="overflow-x-auto"><table class="min-w-full text-left"><thead class="bg-slate-900/80 text-xs uppercase tracking-wide text-slate-500"><tr>${columns.map(col => `<th class="px-3 py-3 font-bold">${headers[col]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>${extra}`;
-    }
-    function cellValue(ticket, col, clickableTickets = false) {
-      if (col === 'ticket') {
-        const label = `#${escapeHtml(String(ticket.ticketNumber))}`, meta = `<div class="mt-1 text-xs font-normal text-slate-500">${escapeHtml(ticket.source.toUpperCase())}${ticket.hasAttachment ? ' · Attachment' : ''}</div>`;
-        return clickableTickets ? `<button class="text-left font-bold text-sky-200 underline-offset-4 hover:underline" data-ticket-detail="${escapeHtml(String(ticket.ticketNumber))}">${label}${meta}</button>` : `${label}${meta}`;
-      }
-      if (col === 'store') return escapeHtml(ticket.store);
-      if (col === 'reporter') return escapeHtml(ticket.reporter || 'Unknown');
-      if (col === 'patch') return escapeHtml(ticket.patch);
-      if (col === 'status') return `<span class="pill rounded-full px-2 py-1 text-xs">${escapeHtml(ticket.status)}</span>`;
-      if (col === 'category') return escapeHtml(ticket.category);
-      if (col === 'age') return ticket.source === 'open' ? escapeHtml(formatAge(ticket.created)) : escapeHtml(formatDate(ticket.modified));
-      if (col === 'onsite') return escapeHtml(formatDate(ticket.onsite) || 'Not scheduled');
-      return '';
+      container.innerHTML = entries.length ? entries.map(([label, count]) => `
+        <button data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}">
+          <div class="breakdown-row-top">
+            <span class="breakdown-label">${escapeHtml(label)}</span>
+            <span class="breakdown-count">${count.toLocaleString()}</span>
+          </div>
+          <div class="bar-bg"><div class="bar" style="width:${(count / max) * 100}%"></div></div>
+        </button>
+      `).join('') : '<div style="color:#94a3b8; font-size:14px;">No tickets found.</div>';
     }
 
     function sortTicketsForModal(tickets) {
       return tickets.sort((a, b) => {
-        const aOpen = a.source === 'open', bOpen = b.source === 'open';
+        const aOpen = a.source === 'open';
+        const bOpen = b.source === 'open';
         if (aOpen && !bOpen) return -1;
         if (!aOpen && bOpen) return 1;
         if (aOpen && bOpen) return new Date(a.created || 0) - new Date(b.created || 0);
         return new Date(b.modified || b.created || 0) - new Date(a.modified || a.created || 0);
       });
     }
+
     function quickBreakdown(type, label) {
-      const tickets = sortTicketsForModal(state.filtered.filter(t => type === 'store' ? t.store === label : t.patch === label));
+      const tickets = sortTicketsForModal(state.all.filter(t => type === 'store' ? t.store === label : t.patch === label));
       const modalColumns = type === 'store' ? ['ticket', 'reporter', 'status', 'category', 'age'] : ['ticket', 'store', 'reporter', 'status', 'category', 'age'];
       const titleType = type === 'store' ? 'Store' : 'Supervisor Patch';
+
       els.modalTitle.textContent = `${titleType}: ${label}`;
-      els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} ticket${tickets.length === 1 ? '' : 's'} based on the current filter view.`;
+      els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} ticket${tickets.length === 1 ? '' : 's'}.`;
       els.modalTicketList.innerHTML = tableMarkup(tickets, { limit: 500, columns: modalColumns, clickableTickets: true });
-      els.ticketModal.classList.remove('hidden'); els.ticketModal.classList.add('flex');
-    }
-    function showTicketDetails(ticketNumber) {
-      const ticket = state.all.find(t => String(t.ticketNumber) === String(ticketNumber));
-      if (!ticket) return;
-      const existing = els.modalTicketList.querySelector('[data-ticket-detail-card]'); if (existing) existing.remove();
-      const detailHtml = `<div data-ticket-detail-card class="mb-4 rounded-2xl border border-slate-700/60 bg-slate-950/70 p-4"><div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"><div><h3 class="text-xl font-black text-sky-200">Ticket #${escapeHtml(String(ticket.ticketNumber))}</h3><p class="mt-1 text-sm text-slate-400">${escapeHtml(ticket.store)} · ${escapeHtml(ticket.status)}</p></div><span class="pill w-fit rounded-full px-3 py-1 text-xs text-slate-300">${escapeHtml(ticket.source.toUpperCase())}</span></div><div class="grid gap-3 md:grid-cols-2"><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Reporter</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.reporter || 'Unknown')}</p></div><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Category</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(ticket.category)}</p></div><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Created</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(formatDate(ticket.created) || 'Not available')}</p></div><div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Onsite Scheduled</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(formatDate(ticket.onsite) || 'Not scheduled')}</p></div></div><div class="mt-4"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Issue Description</p><p class="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">${escapeHtml(ticket.issue || 'No issue description entered.')}</p></div><div class="mt-4"><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Notes</p><p class="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">${escapeHtml(ticket.notes || 'No notes entered.')}</p></div></div>`;
-      els.modalTicketList.insertAdjacentHTML('afterbegin', detailHtml);
-      els.modalTicketList.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function handleOnsiteGroupClick(event, overdue) {
-      const row = event.target.closest('[data-onsite-group]');
-      if (!row) return;
-
-      const groupIndex = Number(row.dataset.onsiteGroup);
-      const groups = overdue ? state.overdueOnsiteGroups : state.upcomingOnsiteGroups;
-      const group = groups?.[groupIndex];
-      if (!group) return;
-
-      els.modalTitle.textContent = `${overdue ? 'Overdue' : 'Upcoming'} Onsite Visit`;
-      els.modalSubtitle.textContent = `${group.store} · ${formatDate(group.onsite) || 'Not scheduled'} · ${group.tickets.length.toLocaleString()} ticket${group.tickets.length === 1 ? '' : 's'}`;
-
-      const sortedTickets = [...group.tickets].sort((a, b) => new Date(a.created || 0) - new Date(b.created || 0));
-      els.modalTicketList.innerHTML = tableMarkup(sortedTickets, {
-        limit: 500,
-        columns: ['ticket', 'reporter', 'status', 'category', 'age'],
-        clickableTickets: true
-      });
-
       els.ticketModal.classList.remove('hidden');
       els.ticketModal.classList.add('flex');
     }
 
-    function handleBreakdownClick(event) { const btn = event.target.closest('[data-breakdown-type]'); if (btn) quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel); }
-    function handleTicketDetailClick(event) { const btn = event.target.closest('[data-ticket-detail]'); if (btn) showTicketDetails(btn.dataset.ticketDetail); }
-    function closeTicketModal() { els.ticketModal.classList.add('hidden'); els.ticketModal.classList.remove('flex'); }
-    function showError(message) { els.errorBox.textContent = message; els.errorBox.classList.remove('hidden'); }
-    function hideError() { els.errorBox.classList.add('hidden'); els.errorBox.textContent = ''; }
+    function tableMarkup(items, options) {
+      const limit = options.limit || 50;
+      const columns = options.columns;
+      const clickableTickets = options.clickableTickets || false;
+
+      if (!items.length) return '<div style="padding:16px; color:#94a3b8; font-size:14px;">No tickets found.</div>';
+
+      const headers = { ticket: 'Ticket', store: 'Store', reporter: 'Reporter', patch: 'Patch', status: 'Status', category: 'Category', age: 'Age / Closed' };
+      const rows = items.slice(0, limit).map(ticket => `
+        <tr class="table-row">
+          ${columns.map(col => `<td>${cellValue(ticket, col, clickableTickets)}</td>`).join('')}
+        </tr>
+      `).join('');
+
+      const extra = items.length > limit ? `<div style="border-top:1px solid var(--border); padding:12px; text-align:center; color:#64748b; font-size:12px;">Showing first ${limit.toLocaleString()} results.</div>` : '';
+
+      return `
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr>${columns.map(col => `<th>${headers[col]}</th>`).join('')}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        ${extra}
+      `;
+    }
+
+    function cellValue(ticket, col, clickableTickets = false) {
+      if (col === 'ticket') {
+        const label = `#${escapeHtml(String(ticket.ticketNumber))}`;
+        const meta = `<div style="margin-top:4px; font-size:12px; color:#64748b; font-weight:400;">${escapeHtml(ticket.source.toUpperCase())}${ticket.hasAttachment ? ' · Attachment' : ''}</div>`;
+        return clickableTickets ? `<button style="background:none; border:0; color:#bae6fd; text-align:left; font-weight:800;" data-ticket-detail="${escapeHtml(String(ticket.ticketNumber))}">${label}${meta}</button>` : `${label}${meta}`;
+      }
+      if (col === 'store') return escapeHtml(ticket.store);
+      if (col === 'reporter') return escapeHtml(ticket.reporter || 'Unknown');
+      if (col === 'patch') return escapeHtml(ticket.patch);
+      if (col === 'status') return `<span class="pill" style="padding:4px 8px; font-size:12px;">${escapeHtml(ticket.status)}</span>`;
+      if (col === 'category') return escapeHtml(ticket.category);
+      if (col === 'age') return ticket.source === 'open' ? escapeHtml(formatAge(ticket.created)) : escapeHtml(formatDate(ticket.modified));
+      return '';
+    }
+
+    function showTicketDetails(ticketNumber) {
+      const ticket = state.all.find(t => String(t.ticketNumber) === String(ticketNumber));
+      if (!ticket) return;
+
+      const existing = els.modalTicketList.querySelector('[data-ticket-detail-card]');
+      if (existing) existing.remove();
+
+      const detailHtml = `
+        <div data-ticket-detail-card class="ticket-detail-card">
+          <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+            <div>
+              <h3 style="margin:0; font-size:22px; font-weight:950; color:#bae6fd;">Ticket #${escapeHtml(String(ticket.ticketNumber))}</h3>
+              <p style="margin:4px 0 0; font-size:14px;">${escapeHtml(ticket.store)} · ${escapeHtml(ticket.status)}</p>
+            </div>
+            <span class="pill" style="height:fit-content; padding:4px 12px; font-size:12px; color:#cbd5e1;">${escapeHtml(ticket.source.toUpperCase())}</span>
+          </div>
+
+          <div class="ticket-detail-grid">
+            <div><p class="detail-label">Reporter</p><p class="detail-value">${escapeHtml(ticket.reporter || 'Unknown')}</p></div>
+            <div><p class="detail-label">Category</p><p class="detail-value">${escapeHtml(ticket.category)}</p></div>
+            <div><p class="detail-label">Created</p><p class="detail-value">${escapeHtml(formatDate(ticket.created) || 'Not available')}</p></div>
+            <div><p class="detail-label">Closed / Modified</p><p class="detail-value">${escapeHtml(formatDate(ticket.modified) || 'Not available')}</p></div>
+          </div>
+
+          <div style="margin-top:16px;"><p class="detail-label">Issue Description</p><p class="detail-value whitespace-pre-wrap">${escapeHtml(ticket.issue || 'No issue description entered.')}</p></div>
+          <div style="margin-top:16px;"><p class="detail-label">Notes</p><p class="detail-value whitespace-pre-wrap">${escapeHtml(ticket.notes || 'No notes entered.')}</p></div>
+        </div>
+      `;
+
+      els.modalTicketList.insertAdjacentHTML('afterbegin', detailHtml);
+      els.modalTicketList.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleBreakdownClick(event) {
+      const btn = event.target.closest('[data-breakdown-type]');
+      if (btn) quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel);
+    }
+
+    function handleTicketDetailClick(event) {
+      const btn = event.target.closest('[data-ticket-detail]');
+      if (btn) showTicketDetails(btn.dataset.ticketDetail);
+    }
+
+    function closeTicketModal() {
+      els.ticketModal.classList.add('hidden');
+      els.ticketModal.classList.remove('flex');
+    }
+
+    function showError(message) {
+      els.errorBox.textContent = message;
+      els.errorBox.classList.remove('hidden');
+    }
+
+    function hideError() {
+      els.errorBox.classList.add('hidden');
+      els.errorBox.textContent = '';
+    }
 
     function applyBranding() {
       document.title = CONFIG.dashboardTitle || 'Technology Ticket Dashboard';
-      const orgEl = document.getElementById('organizationName');
-      const titleEl = document.getElementById('dashboardTitle');
-      if (orgEl) orgEl.textContent = CONFIG.organizationName || 'Organization Name';
-      if (titleEl) titleEl.textContent = CONFIG.dashboardTitle || 'Technology Ticket Dashboard';
-    }
-
-    function validateConfig() {
-      if (!CONFIG.apiUrl) {
-        throw new Error('Dashboard setup incomplete. Missing apiUrl.');
-      }
+      document.getElementById('organizationName').textContent = CONFIG.organizationName || 'Organization Name';
+      document.getElementById('dashboardTitle').textContent = CONFIG.dashboardTitle || 'Technology Ticket Dashboard';
     }
 
     async function loadDashboard() {
@@ -1140,8 +864,6 @@ function passesTicketDateFilter(ticket) {
       els.refreshBtn.textContent = 'Refreshing...';
 
       try {
-        validateConfig();
-
         const response = await fetch(CONFIG.apiUrl);
         if (!response.ok) throw new Error(`Dashboard API failed (${response.status})`);
 
@@ -1152,16 +874,9 @@ function passesTicketDateFilter(ticket) {
         state.open = state.all.filter(t => t.source === 'open');
         state.closed = state.all.filter(t => t.source === 'closed');
 
-        setupFilters();
         renderSummary();
-        applyFilters();
 
-        els.lastUpdated.textContent = new Date().toLocaleString([], {
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit'
-        });
+        els.lastUpdated.textContent = new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       } catch (error) {
         console.error(error);
         showError(`${error.message}. Check /api/ticket-dashboard and make sure it returns a records array.`);
@@ -1171,20 +886,20 @@ function passesTicketDateFilter(ticket) {
       }
     }
 
-    [els.setFilter, els.statusFilter, els.storeFilter, els.patchFilter, els.categoryFilter, els.onsiteFilter, els.startDateFilter, els.endDateFilter].forEach(el => el.addEventListener('change', applyFilters));
-    els.dateRangeFilter.addEventListener('change', () => { const custom = els.dateRangeFilter.value === 'custom'; els.startDateFilter.disabled = !custom; els.endDateFilter.disabled = !custom; applyFilters(); });
-    [els.performancePeriodFilter, els.performanceStartDate, els.performanceEndDate].forEach(el => el.addEventListener('change', () => { const custom = els.performancePeriodFilter.value === 'custom'; els.performanceStartDate.disabled = !custom; els.performanceEndDate.disabled = !custom; renderPerformanceMetrics(); }));
-    els.searchInput.addEventListener('input', applyFilters);
+    [els.performancePeriodFilter, els.performanceStartDate, els.performanceEndDate].forEach(el => el.addEventListener('change', () => {
+      const custom = els.performancePeriodFilter.value === 'custom';
+      els.performanceStartDate.disabled = !custom;
+      els.performanceEndDate.disabled = !custom;
+      renderPerformanceMetrics();
+    }));
+
     els.refreshBtn.addEventListener('click', loadDashboard);
     els.storeBreakdown.addEventListener('click', handleBreakdownClick);
     els.patchBreakdown.addEventListener('click', handleBreakdownClick);
-    els.upcomingOnsite.addEventListener('click', event => handleOnsiteGroupClick(event, false));
-    els.overdueOnsite.addEventListener('click', event => handleOnsiteGroupClick(event, true));
     els.modalTicketList.addEventListener('click', handleTicketDetailClick);
     els.closeModal.addEventListener('click', closeTicketModal);
     els.ticketModal.addEventListener('click', event => { if (event.target === els.ticketModal) closeTicketModal(); });
     document.addEventListener('keydown', event => { if (event.key === 'Escape') closeTicketModal(); });
-    els.clearFilters.addEventListener('click', () => { els.setFilter.value = 'open'; els.statusFilter.value = 'all'; els.storeFilter.value = 'all'; els.patchFilter.value = 'all'; els.categoryFilter.value = 'all'; els.onsiteFilter.value = 'all'; els.dateRangeFilter.value = 'all'; els.startDateFilter.value = ''; els.endDateFilter.value = ''; els.startDateFilter.disabled = true; els.endDateFilter.disabled = true; els.searchInput.value = ''; applyFilters(); });
 
     applyBranding();
     loadDashboard();
