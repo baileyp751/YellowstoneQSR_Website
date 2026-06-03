@@ -87,28 +87,29 @@ export async function GET({ request, locals }: any) {
     .sort((a, b) => b.daysOpen - a.daysOpen)[0];
 
   return new Response(
-    JSON.stringify({
-      overview: {
-        openTickets: openTickets.length,
-        closedTickets: closedTickets.length,
-        totalTickets: tickets.length,
-        oldestOpen,
-      },
-      performance: {
-        opened: openedInRange.length,
-        closed: closedInRange.length,
-        closeRate:
-          openedInRange.length > 0
-            ? Math.round((closedInRange.length / openedInRange.length) * 100)
-            : 0,
-      },
-      debug: {
-        loadedTickets: tickets.length,
-      },
-    }),
-    {
-      headers: {
-        "Content-Type": "application/json",
+  JSON.stringify({
+    overview: {
+      openTickets: openTickets.length,
+      closedTickets: closedTickets.length,
+      totalTickets: tickets.length,
+      oldestOpen,
+    },
+    performance: {
+      opened: openedInRange.length,
+      closed: closedInRange.length,
+      closeRate:
+        openedInRange.length > 0
+          ? Math.round((closedInRange.length / openedInRange.length) * 100)
+          : 0,
+    },
+    records: tickets,
+    debug: {
+      loadedTickets: tickets.length,
+    },
+  }),
+  {
+    headers: {
+      "Content-Type": "application/json",
       },
     }
   );
