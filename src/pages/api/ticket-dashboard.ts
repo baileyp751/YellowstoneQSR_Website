@@ -1,12 +1,7 @@
 export const prerender = false;
 
-const NOCODB_URL =
-  "https://nocodb.yellowstoneqsr.org/api/v3/data/px1ga5r695yvn0t/m70l1rghxqp836u/records?pageSize=2000";
-
-type Ticket = {
-  fields?: Record<string, any>;
-  [key: string]: any;
-};
+const FIRST_URL =
+  "https://nocodb.yellowstoneqsr.org/api/v3/data/px1ga5r695yvn0t/m70l1rghxqp836u/records?pageSize=1000";
 
 function getRange(range: string) {
   const now = new Date();
@@ -29,6 +24,27 @@ function getRange(range: string) {
   return { start, end };
 }
 
+async function getAllTickets(token: string) {
+  let records: any[] = [];
+  let nextUrl: string | null = FIRST_URL;
+
+  while (nextUrl) {
+    const res = await fetch(nextUrl, {
+      headers: {
+        "xc-token": token,
+      },
+    });
+
+    const data: any = await res.json();
+
+    records.push(...(data.records || []));
+
+    nextUrl = data.next || null;
+  }
+
+  return records.map((r) => r.fields || r);
+}
+
 export async function GET({ request, locals }: any) {
   const token =
     locals?.runtime?.env?.NOCODB_TOKEN || import.meta.env.NOCODB_TOKEN;
@@ -37,19 +53,15 @@ export async function GET({ request, locals }: any) {
   const range = url.searchParams.get("range") || "last30";
   const { start, end } = getRange(range);
 
-  const res = await fetch(NOCODB_URL, {
-    headers: { "xc-token": token },
-  });
+  const tickets = await getAllTickets(token);
 
-  const data: any = await res.json();
-  const records: Ticket[] = data.records || [];
-
-  const tickets = records.map((r) => r.fields || r);
-
-  const isArchived = (t: any) => t.Archived === 1 || t.Archived === true;
+  const isArchived = (t: any) =>
+    t.Archived === 1 || t.Archived === true || t.Archived === "1";
 
   const inRange = (dateValue: string) => {
     if (!start) return true;
+    if (!dateValue) return false;
+
     const d = new Date(dateValue);
     return d >= start && d < end!;
   };
@@ -58,6 +70,7 @@ export async function GET({ request, locals }: any) {
   const closedTickets = tickets.filter((t) => isArchived(t));
 
   const openedInRange = tickets.filter((t) => inRange(t.Created));
+
   const closedInRange = tickets.filter(
     (t) => isArchived(t) && inRange(t["Last Modified"])
   );
@@ -89,7 +102,14 @@ export async function GET({ request, locals }: any) {
             ? Math.round((closedInRange.length / openedInRange.length) * 100)
             : 0,
       },
+      debug: {
+        loadedTickets: tickets.length,
+      },
     }),
-    { headers: { "Content-Type": "application/json" } }
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
 }
