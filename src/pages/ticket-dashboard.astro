@@ -22,7 +22,9 @@
       --indigo: #818cf8;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -49,8 +51,16 @@
       margin-bottom: 26px;
     }
 
-    header > div:first-child { max-width: 920px; }
-    header > div:last-child { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    header > div:first-child {
+      max-width: 920px;
+    }
+
+    header > div:last-child {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
     #organizationName {
       margin: 0;
@@ -70,7 +80,9 @@
       color: #fff;
     }
 
-    p { color: var(--muted); }
+    p {
+      color: var(--muted);
+    }
 
     .help-box {
       margin-top: 16px;
@@ -81,8 +93,17 @@
       color: #cbd5e1;
     }
 
-    .help-box ul { margin: 8px 0 0; padding: 0; list-style: none; }
-    .help-box li { margin-top: 5px; color: var(--muted); font-size: 14px; }
+    .help-box ul {
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .help-box li {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
     .card,
     .last-updated,
@@ -118,7 +139,10 @@
       border-radius: 999px;
     }
 
-    button { cursor: pointer; font: inherit; }
+    button {
+      cursor: pointer;
+      font: inherit;
+    }
 
     #refreshBtn {
       border: 0;
@@ -131,7 +155,9 @@
       box-shadow: 0 16px 40px rgba(2, 132, 199, 0.20);
     }
 
-    #refreshBtn:hover { background: #7dd3fc; }
+    #refreshBtn:hover {
+      background: #7dd3fc;
+    }
 
     .last-updated {
       border-radius: 18px;
@@ -157,9 +183,17 @@
       margin-bottom: 24px;
     }
 
-    #errorBox:not(.hidden) { display: block; }
-    .hidden { display: none !important; }
-    .flex { display: flex !important; }
+    #errorBox:not(.hidden) {
+      display: block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .flex {
+      display: flex !important;
+    }
 
     .section-head {
       display: flex;
@@ -177,11 +211,26 @@
       letter-spacing: -0.02em;
     }
 
-    .grid { display: grid; }
-    .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-    .breakdown-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+    .grid {
+      display: grid;
+    }
 
-    .metric-label { margin: 0; color: var(--muted); font-size: 14px; }
+    .metric-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .breakdown-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .metric-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .metric-value {
       margin-top: 8px;
       font-size: clamp(36px, 4vw, 48px);
@@ -189,8 +238,17 @@
       color: #fff;
       line-height: 1;
     }
-    .metric-note { margin: 8px 0 0; color: var(--muted2); font-size: 12px; }
-    #perfAvgResolution, #oldestOpen { font-size: clamp(28px, 3vw, 38px); }
+
+    .metric-note {
+      margin: 8px 0 0;
+      color: var(--muted2);
+      font-size: 12px;
+    }
+
+    #perfAvgResolution,
+    #oldestOpen {
+      font-size: clamp(28px, 3vw, 38px);
+    }
 
     select,
     input {
@@ -210,7 +268,9 @@
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
 
-    input:disabled { opacity: 0.45; }
+    input:disabled {
+      opacity: 0.45;
+    }
 
     label span {
       display: block;
@@ -258,19 +318,17 @@
     .breakdown-row {
       display: block;
       width: 100%;
-      border: 0 !important;
-      background: transparent !important;
-      color: inherit;
-      border-radius: 18px;
+      background: transparent;
+      border: 0;
       padding: 10px;
+      border-radius: 18px;
+      cursor: pointer;
       text-align: left;
-      transition: background 0.2s ease;
-      appearance: none;
-      -webkit-appearance: none;
+      color: inherit;
     }
 
     .breakdown-row:hover {
-      background: rgba(30, 41, 59, 0.72) !important;
+      background: rgba(30, 41, 59, 0.72);
     }
 
     .breakdown-row-top {
@@ -278,8 +336,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      font-size: 14px;
       margin-bottom: 6px;
+      font-size: 14px;
     }
 
     .breakdown-label {
@@ -310,11 +368,39 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.22);
     }
 
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: rgba(15, 23, 42, 0.9); color: var(--muted2); text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; }
-    th, td { padding: 12px; vertical-align: top; text-align: left; }
-    .table-row { border-top: 1px solid var(--border); }
-    .table-row:hover { background: rgba(51, 65, 85, 0.48); }
+    .empty-breakdown {
+      color: #94a3b8;
+      font-size: 14px;
+      padding: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted2);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .table-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .table-row:hover {
+      background: rgba(51, 65, 85, 0.48);
+    }
 
     #ticketModal {
       position: fixed;
@@ -328,7 +414,9 @@
       backdrop-filter: blur(5px);
     }
 
-    #ticketModal.flex { display: flex !important; }
+    #ticketModal.flex {
+      display: flex !important;
+    }
 
     #ticketModal > div {
       width: min(100%, 1152px);
@@ -346,9 +434,23 @@
       padding: 20px;
     }
 
-    #modalTitle { margin: 0; font-size: 28px; font-weight: 900; }
-    #modalSubtitle { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
-    #modalTicketList { overflow: auto; padding: 20px; }
+    #modalTitle {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    #modalSubtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    #modalTicketList {
+      overflow: auto;
+      padding: 20px;
+    }
+
     #closeModal {
       border-radius: 12px;
       border: 1px solid rgba(148, 163, 184, 0.35);
@@ -357,7 +459,10 @@
       padding: 8px 16px;
       font-weight: 800;
     }
-    #closeModal:hover { background: rgba(30, 41, 59, 0.7); }
+
+    #closeModal:hover {
+      background: rgba(30, 41, 59, 0.7);
+    }
 
     .ticket-detail-card {
       margin-bottom: 16px;
@@ -382,9 +487,19 @@
       margin: 0;
     }
 
-    .detail-value { color: #e2e8f0; font-size: 14px; margin: 4px 0 0; }
-    .whitespace-pre-wrap { white-space: pre-wrap; }
-    .overflow-x-auto { overflow-x: auto; }
+    .detail-value {
+      color: #e2e8f0;
+      font-size: 14px;
+      margin: 4px 0 0;
+    }
+
+    .whitespace-pre-wrap {
+      white-space: pre-wrap;
+    }
+
+    .overflow-x-auto {
+      overflow-x: auto;
+    }
 
     .ticket-link {
       background: none;
@@ -396,71 +511,45 @@
     }
 
     @media (max-width: 1180px) {
-      .breakdown-grid { grid-template-columns: 1fr; }
+      .breakdown-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 920px) {
-      .page-wrap { padding: 22px; }
-      header { flex-direction: column; }
-      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .period-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; width: 100%; }
+      .page-wrap {
+        padding: 22px;
+      }
+
+      header {
+        flex-direction: column;
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .period-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        min-width: 0;
+        width: 100%;
+      }
     }
 
     @media (max-width: 560px) {
-      .page-wrap { padding: 16px; }
+      .page-wrap {
+        padding: 16px;
+      }
+
       .metric-grid,
       .period-controls,
-      .ticket-detail-grid { grid-template-columns: 1fr; }
-      #dashboardTitle { font-size: 34px; }
-    .breakdown-row {
-  display: block !important;
-  width: 100% !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 10px !important;
-  border-radius: 18px !important;
-  cursor: pointer !important;
-  text-align: left !important;
-}
+      .ticket-detail-grid {
+        grid-template-columns: 1fr;
+      }
 
-.breakdown-row:hover {
-  background: rgba(30, 41, 59, 0.72) !important;
-}
-
-.breakdown-row-top {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 12px !important;
-  margin-bottom: 6px !important;
-  font-size: 14px !important;
-}
-
-.breakdown-label {
-  color: #e2e8f0 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-.breakdown-count {
-  color: #f8fafc !important;
-  font-weight: 900 !important;
-}
-
-.breakdown-track {
-  height: 8px !important;
-  width: 100% !important;
-  border-radius: 999px !important;
-  overflow: hidden !important;
-  background: rgba(51, 65, 85, 0.82) !important;
-}
-
-.breakdown-fill {
-  height: 100% !important;
-  border-radius: 999px !important;
-  background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 55%, #818cf8 100%) !important;
-}
+      #dashboardTitle {
+        font-size: 34px;
+      }
     }
   </style>
 </head>
@@ -472,7 +561,9 @@
         <p id="organizationName">Organization Name</p>
         <h1 id="dashboardTitle">Technology Ticket Dashboard</h1>
         <div style="margin-top: 12px;">
-          <p style="max-width: 780px; margin: 0; font-size: 14px;">Live dashboard pulling open and closed ticket data from NocoDB. Counts update automatically as tickets are added, changed, or closed.</p>
+          <p style="max-width: 780px; margin: 0; font-size: 14px;">
+            Live dashboard pulling open and closed ticket data from NocoDB. Counts update automatically as tickets are added, changed, or closed.
+          </p>
         </div>
         <div class="help-box">
           <div style="font-weight: 900; color: #f8fafc; margin-bottom: 8px;">How to Read This Dashboard</div>
@@ -501,8 +592,11 @@
       <div class="section-head">
         <div>
           <h2>Performance Metrics</h2>
-          <p id="performanceSubtitle" style="margin: 4px 0 0; font-size: 14px;">Metrics based on the selected performance period.</p>
+          <p id="performanceSubtitle" style="margin: 4px 0 0; font-size: 14px;">
+            Metrics based on the selected performance period.
+          </p>
         </div>
+
         <div class="period-controls">
           <label>
             <span>Performance Period</span>
@@ -516,10 +610,12 @@
               <option value="custom">Custom Range</option>
             </select>
           </label>
+
           <label>
             <span>Start Date</span>
             <input id="performanceStartDate" type="date" disabled />
           </label>
+
           <label>
             <span>End Date</span>
             <input id="performanceEndDate" type="date" disabled />
@@ -533,16 +629,19 @@
           <div id="perfOpened" class="metric-value">--</div>
           <p class="metric-note">Created in period</p>
         </div>
+
         <div class="soft">
           <p class="metric-label">Tickets Closed</p>
           <div id="perfClosed" class="metric-value">--</div>
           <p class="metric-note">Closed in period</p>
         </div>
+
         <div class="soft">
           <p class="metric-label">Avg Resolution</p>
           <div id="perfAvgResolution" class="metric-value">--</div>
           <p id="perfAvgResolutionNote" class="metric-note">Requires Created + Last Modified</p>
         </div>
+
         <div class="soft">
           <p class="metric-label">Close Rate</p>
           <div id="perfCloseRate" class="metric-value">--</div>
@@ -555,25 +654,31 @@
       <div class="section-head">
         <div>
           <h2>Organization Overview</h2>
-          <p style="margin: 4px 0 0; font-size: 14px;">All-time organization health and accountability metrics.</p>
+          <p style="margin: 4px 0 0; font-size: 14px;">
+            All-time organization health and accountability metrics.
+          </p>
         </div>
       </div>
+
       <div class="grid metric-grid">
         <div class="soft">
           <p class="metric-label">Open Tickets</p>
           <div id="openCount" class="metric-value">--</div>
           <p class="metric-note">Anything not closed</p>
         </div>
+
         <div class="soft">
           <p class="metric-label">Closed Tickets</p>
           <div id="closedCount" class="metric-value">--</div>
           <p class="metric-note">Archived / closed view</p>
         </div>
+
         <div class="soft">
           <p class="metric-label">Total Tickets</p>
           <div id="totalCount" class="metric-value">--</div>
           <p class="metric-note">Open + closed</p>
         </div>
+
         <div class="soft">
           <p class="metric-label">Oldest Open</p>
           <div id="oldestOpen" class="metric-value">--</div>
@@ -630,7 +735,11 @@
       refreshMinutes: 5
     };
 
-    const state = { open: [], closed: [], all: [] };
+    const state = {
+      open: [],
+      closed: [],
+      all: []
+    };
 
     const els = {
       lastUpdated: document.getElementById('lastUpdated'),
@@ -691,14 +800,27 @@
       if (Array.isArray(value)) {
         const names = value.map(item => {
           if (typeof item === 'string') return item;
-          return item.display_name || item.title || item.name || item['OTP Name'] || item['Name'] || item.email || '';
+
+          return item.display_name
+            || item.title
+            || item.name
+            || item['OTP Name']
+            || item.Name
+            || item.email
+            || '';
         }).filter(Boolean);
 
         return names.length ? names.join(', ') : 'No OTP Listed';
       }
 
       if (typeof value === 'object') {
-        return value.display_name || value.title || value.name || value['OTP Name'] || value['Name'] || value.email || 'No OTP Listed';
+        return value.display_name
+          || value.title
+          || value.name
+          || value['OTP Name']
+          || value.Name
+          || value.email
+          || 'No OTP Listed';
       }
 
       return String(value);
@@ -716,36 +838,63 @@
 
     function formatDate(value) {
       if (!value) return '';
+
       const d = new Date(value);
+
       if (Number.isNaN(d.getTime())) return value;
-      return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+      return d.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
     }
 
     function formatAge(value) {
       if (!value) return 'Unknown';
+
       const d = new Date(value);
+
       if (Number.isNaN(d.getTime())) return 'Unknown';
+
       const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+
       if (days < 1) return 'Today';
       if (days === 1) return '1 day';
+
       return `${days} days`;
     }
 
     function formatDuration(ms) {
       if (!Number.isFinite(ms) || ms < 0) return 'Unavailable';
+
       const hours = ms / 3600000;
-      return hours < 48 ? `${hours.toFixed(1)} hrs` : `${(hours / 24).toFixed(1)} days`;
+
+      return hours < 48
+        ? `${hours.toFixed(1)} hrs`
+        : `${(hours / 24).toFixed(1)} days`;
     }
 
     function averageClosureTime(closed) {
-      const durations = closed.map(t => {
-        if (!t.created || !t.modified) return null;
-        const s = new Date(t.created).getTime();
-        const e = new Date(t.modified).getTime();
-        return Number.isFinite(s) && Number.isFinite(e) && e >= s ? e - s : null;
-      }).filter(v => v !== null);
+      const durations = closed.map(ticket => {
+        if (!ticket.created || !ticket.modified) return null;
 
-      if (!durations.length) return { text: 'Unavailable', count: 0 };
+        const start = new Date(ticket.created).getTime();
+        const end = new Date(ticket.modified).getTime();
+
+        return Number.isFinite(start) && Number.isFinite(end) && end >= start
+          ? end - start
+          : null;
+      }).filter(value => value !== null);
+
+      if (!durations.length) {
+        return {
+          text: 'Unavailable',
+          count: 0
+        };
+      }
 
       return {
         text: formatDuration(durations.reduce((a, b) => a + b, 0) / durations.length),
@@ -757,6 +906,7 @@
       const now = new Date();
       const start = new Date(now.getFullYear(), now.getMonth() + offset, 1);
       const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0, 23, 59, 59, 999);
+
       return { start, end };
     }
 
@@ -807,9 +957,11 @@
 
     function inRange(value, bounds) {
       if (!value) return false;
+
       if (!bounds.start && !bounds.end) return true;
 
       const d = new Date(value);
+
       if (Number.isNaN(d.getTime())) return false;
       if (bounds.start && d < bounds.start) return false;
       if (bounds.end && d > bounds.end) return false;
@@ -835,7 +987,7 @@
       els.totalCount.textContent = state.all.length.toLocaleString();
 
       const oldestTicket = [...state.open]
-        .filter(t => t.created)
+        .filter(ticket => ticket.created)
         .sort((a, b) => new Date(a.created) - new Date(b.created))[0];
 
       if (oldestTicket) {
@@ -859,8 +1011,8 @@
 
       els.performanceSubtitle.textContent = `Metrics based on ${bounds.label}.`;
 
-      const opened = state.all.filter(t => inRange(t.created, bounds));
-      const closed = state.closed.filter(t => inRange(t.modified || t.created, bounds));
+      const opened = state.all.filter(ticket => inRange(ticket.created, bounds));
+      const closed = state.closed.filter(ticket => inRange(ticket.modified || ticket.created, bounds));
       const avg = averageClosureTime(closed);
 
       els.perfOpened.textContent = opened.length.toLocaleString();
@@ -874,30 +1026,42 @@
         : '0%';
     }
 
-    function renderBreakdown(container, counts, type) {
-  const entries = sortedEntries(counts);
-  const max = Math.max(...entries.map(e => e[1]), 1);
+    function renderBreakdowns() {
+      const openOnly = state.open;
 
-  container.innerHTML = entries.length
-    ? entries.map(([label, count]) => `
-      <div
-        class="breakdown-row"
-        role="button"
-        tabindex="0"
-        data-breakdown-type="${escapeHtml(type)}"
-        data-breakdown-label="${escapeHtml(label)}"
-      >
-        <div class="breakdown-row-top">
-          <span class="breakdown-label">${escapeHtml(label)}</span>
-          <span class="breakdown-count">${count.toLocaleString()}</span>
-        </div>
-        <div class="breakdown-track">
-          <div class="breakdown-fill" style="width:${(count / max) * 100}%"></div>
-        </div>
-      </div>
-    `).join('')
-    : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
-}
+      renderBreakdown(els.storeBreakdown, countBy(openOnly, 'store'), 'store');
+      renderBreakdown(els.patchBreakdown, countBy(openOnly, 'patch'), 'patch');
+      renderBreakdown(els.otpBreakdown, countBy(openOnly, 'otp'), 'otp');
+    }
+
+    function renderBreakdown(container, counts, type) {
+      const entries = sortedEntries(counts);
+      const max = Math.max(...entries.map(entry => entry[1]), 1);
+
+      container.innerHTML = entries.length
+        ? entries.map(([label, count]) => {
+          const width = Math.max((count / max) * 100, 6);
+
+          return `
+            <div
+              class="breakdown-row"
+              role="button"
+              tabindex="0"
+              data-breakdown-type="${escapeHtml(type)}"
+              data-breakdown-label="${escapeHtml(label)}"
+            >
+              <div class="breakdown-row-top">
+                <span class="breakdown-label">${escapeHtml(label)}</span>
+                <span class="breakdown-count">${count.toLocaleString()}</span>
+              </div>
+              <div class="breakdown-track">
+                <div class="breakdown-fill" style="width:${width}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('')
+        : '<div class="empty-breakdown">No open tickets found.</div>';
+    }
 
     function sortTicketsForModal(tickets) {
       return tickets.sort((a, b) => new Date(a.created || 0) - new Date(b.created || 0));
@@ -905,10 +1069,10 @@
 
     function quickBreakdown(type, label) {
       const tickets = sortTicketsForModal(
-        state.open.filter(t => {
-          if (type === 'store') return t.store === label;
-          if (type === 'patch') return t.patch === label;
-          if (type === 'otp') return t.otp === label;
+        state.open.filter(ticket => {
+          if (type === 'store') return ticket.store === label;
+          if (type === 'patch') return ticket.patch === label;
+          if (type === 'otp') return ticket.otp === label;
           return false;
         })
       );
@@ -996,10 +1160,12 @@
     }
 
     function showTicketDetails(ticketNumber) {
-      const ticket = state.all.find(t => String(t.ticketNumber) === String(ticketNumber));
+      const ticket = state.all.find(item => String(item.ticketNumber) === String(ticketNumber));
+
       if (!ticket) return;
 
       const existing = els.modalTicketList.querySelector('[data-ticket-detail-card]');
+
       if (existing) existing.remove();
 
       const detailHtml = `
@@ -1032,14 +1198,27 @@
       `;
 
       els.modalTicketList.insertAdjacentHTML('afterbegin', detailHtml);
-      els.modalTicketList.scrollTo({ top: 0, behavior: 'smooth' });
+      els.modalTicketList.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
 
     function handleBreakdownClick(event) {
-      const btn = event.target.closest('[data-breakdown-type]');
-      if (btn) {
-        quickBreakdown(btn.dataset.breakdownType, btn.dataset.breakdownLabel);
+      const row = event.target.closest('[data-breakdown-type]');
+      if (row) {
+        quickBreakdown(row.dataset.breakdownType, row.dataset.breakdownLabel);
       }
+    }
+
+    function handleBreakdownKeydown(event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+
+      const row = event.target.closest('[data-breakdown-type]');
+      if (!row) return;
+
+      event.preventDefault();
+      quickBreakdown(row.dataset.breakdownType, row.dataset.breakdownLabel);
     }
 
     function handleTicketDetailClick(event) {
@@ -1077,14 +1256,17 @@
 
       try {
         const response = await fetch(CONFIG.apiUrl);
-        if (!response.ok) throw new Error(`Dashboard API failed (${response.status})`);
+
+        if (!response.ok) {
+          throw new Error(`Dashboard API failed (${response.status})`);
+        }
 
         const data = await response.json();
         const records = data.records || [];
 
-        state.all = records.map(r => normalizeRecord(r));
-        state.open = state.all.filter(t => t.source === 'open');
-        state.closed = state.all.filter(t => t.source === 'closed');
+        state.all = records.map(record => normalizeRecord(record));
+        state.open = state.all.filter(ticket => ticket.source === 'open');
+        state.closed = state.all.filter(ticket => ticket.source === 'closed');
 
         renderSummary();
 
@@ -1113,14 +1295,23 @@
     });
 
     els.refreshBtn.addEventListener('click', loadDashboard);
+
     els.storeBreakdown.addEventListener('click', handleBreakdownClick);
     els.patchBreakdown.addEventListener('click', handleBreakdownClick);
     els.otpBreakdown.addEventListener('click', handleBreakdownClick);
+
+    els.storeBreakdown.addEventListener('keydown', handleBreakdownKeydown);
+    els.patchBreakdown.addEventListener('keydown', handleBreakdownKeydown);
+    els.otpBreakdown.addEventListener('keydown', handleBreakdownKeydown);
+
     els.modalTicketList.addEventListener('click', handleTicketDetailClick);
+
     els.closeModal.addEventListener('click', closeTicketModal);
+
     els.ticketModal.addEventListener('click', event => {
       if (event.target === els.ticketModal) closeTicketModal();
     });
+
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') closeTicketModal();
     });
