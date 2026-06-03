@@ -232,6 +232,9 @@
       max-height: 650px;
       overflow-y: auto;
       padding-right: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .breakdown-card-head {
@@ -253,7 +256,6 @@
       padding: 10px;
       text-align: left;
       transition: background 0.2s ease;
-      margin-bottom: 8px;
     }
 
     #storeBreakdown button:hover,
@@ -500,14 +502,14 @@
     <section class="grid breakdown-grid">
       <div class="card">
         <div class="breakdown-card-head">
-          <h2>Tickets by Store</h2>
+          <h2>Open Tickets by Store</h2>
           <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click a store</span>
         </div>
         <div id="storeBreakdown"></div>
       </div>
       <div class="card">
         <div class="breakdown-card-head">
-          <h2>Tickets by Supervisor Area / Patch</h2>
+          <h2>Open Tickets by Supervisor Area / Patch</h2>
           <span class="pill" style="padding: 4px 12px; font-size: 12px; color: #cbd5e1;">Click a patch</span>
         </div>
         <div id="patchBreakdown"></div>
@@ -710,8 +712,9 @@
     }
 
     function renderBreakdowns() {
-      renderBreakdown(els.storeBreakdown, countBy(state.all, 'store'), 'store');
-      renderBreakdown(els.patchBreakdown, countBy(state.all, 'patch'), 'patch');
+      const openOnly = state.open;
+      renderBreakdown(els.storeBreakdown, countBy(openOnly, 'store'), 'store');
+      renderBreakdown(els.patchBreakdown, countBy(openOnly, 'patch'), 'patch');
     }
 
     function renderBreakdown(container, counts, type) {
@@ -719,14 +722,14 @@
       const max = Math.max(...entries.map(e => e[1]), 1);
 
       container.innerHTML = entries.length ? entries.map(([label, count]) => `
-        <button data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}">
+        <button class="breakdown-row" data-breakdown-type="${escapeHtml(type)}" data-breakdown-label="${escapeHtml(label)}" title="${type === 'store' ? 'View open tickets for this store' : 'View open tickets for this patch'}">
           <div class="breakdown-row-top">
             <span class="breakdown-label">${escapeHtml(label)}</span>
             <span class="breakdown-count">${count.toLocaleString()}</span>
           </div>
           <div class="bar-bg"><div class="bar" style="width:${(count / max) * 100}%"></div></div>
         </button>
-      `).join('') : '<div style="color:#94a3b8; font-size:14px;">No tickets found.</div>';
+      `).join('') : '<div style="color:#94a3b8; font-size:14px; padding:12px;">No open tickets found.</div>';
     }
 
     function sortTicketsForModal(tickets) {
@@ -741,12 +744,12 @@
     }
 
     function quickBreakdown(type, label) {
-      const tickets = sortTicketsForModal(state.all.filter(t => type === 'store' ? t.store === label : t.patch === label));
+      const tickets = sortTicketsForModal(state.open.filter(t => type === 'store' ? t.store === label : t.patch === label));
       const modalColumns = type === 'store' ? ['ticket', 'reporter', 'status', 'category', 'age'] : ['ticket', 'store', 'reporter', 'status', 'category', 'age'];
       const titleType = type === 'store' ? 'Store' : 'Supervisor Patch';
 
       els.modalTitle.textContent = `${titleType}: ${label}`;
-      els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} ticket${tickets.length === 1 ? '' : 's'}.`;
+      els.modalSubtitle.textContent = `${tickets.length.toLocaleString()} open ticket${tickets.length === 1 ? '' : 's'}.`;
       els.modalTicketList.innerHTML = tableMarkup(tickets, { limit: 500, columns: modalColumns, clickableTickets: true });
       els.ticketModal.classList.remove('hidden');
       els.ticketModal.classList.add('flex');
